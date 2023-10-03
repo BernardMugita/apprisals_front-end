@@ -2,6 +2,7 @@ import 'package:employee_insights/screens/Dashboard/dashboard.dart';
 import 'package:employee_insights/screens/Employees/employee_apprisal.dart';
 import 'package:employee_insights/screens/Employees/employees.dart';
 import 'package:employee_insights/screens/Messages/messages.dart';
+import 'package:employee_insights/screens/Messages/single_message_view.dart';
 import 'package:employee_insights/screens/Payslips/payslips_list.dart';
 import 'package:employee_insights/screens/Payslips/single_payslip.dart';
 import 'package:employee_insights/screens/Tasks/create_task.dart';
@@ -29,6 +30,7 @@ Future<void> main() async {
       '/payslips': (context) => const PayslipsList(),
       '/single_slip': (context) => const SinglePayslip(),
       '/messages': (context) => const Messages(),
+      '/single_message': (context) => const SingleMessageView(),
     },
   ));
 }
@@ -57,6 +59,7 @@ class _RootAppState extends State<RootApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Center(child: _componentList.elementAt(_currentIndex)),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -111,6 +114,8 @@ class _RootAppState extends State<RootApp> {
         ],
       ),
       endDrawer: const EndDrawer(),
+      // show end drawer gesture
+      endDrawerEnableOpenDragGesture: true,
     );
   }
 }

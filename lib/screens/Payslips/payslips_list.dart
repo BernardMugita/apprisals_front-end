@@ -13,12 +13,14 @@ class _PayslipsListState extends State<PayslipsList> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey[200],
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepOrange,
+              maximumSize: const Size(160, 40)),
           onPressed: () {
             Navigator.pushNamed(context, '/single_slip');
           },
-          backgroundColor: Colors.deepOrange,
-          child: const Icon(Icons.add),
+          child: const Text("Prepare Payslip"),
         ),
         body: Column(
           children: [

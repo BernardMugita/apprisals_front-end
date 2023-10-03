@@ -84,8 +84,9 @@ class _SinglePayslipState extends State<SinglePayslip> {
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.deepOrangeAccent,
                             foregroundColor: Colors.white,
+                            maximumSize: const Size(180, 50),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(30),
                             ),
                           ),
                           onPressed: () {},
