@@ -1,4 +1,4 @@
-import 'package:employee_insights/widgets/App_widgets/top_decoration.dart';
+import 'package:employee_insights/widgets/App_widgets/top_decoration_alternate.dart';
 import 'package:employee_insights/widgets/Payslip_widgets/payslip_banner.dart';
 import 'package:employee_insights/widgets/Payslip_widgets/payslip_component.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +14,10 @@ class _PayslipsListState extends State<PayslipsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: const Color(0xFFFEF1ED),
         floatingActionButton: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepOrange,
-              maximumSize: const Size(160, 40)),
+              backgroundColor: Colors.green, maximumSize: const Size(160, 40)),
           onPressed: () {
             Navigator.pushNamed(context, '/single_slip');
           },
@@ -26,7 +25,7 @@ class _PayslipsListState extends State<PayslipsList> {
         ),
         body: Column(
           children: [
-            const TopDecoration(),
+            const TopDecorationAlternate(),
             const PayslipBanner(),
             Container(
               padding: const EdgeInsets.all(15),

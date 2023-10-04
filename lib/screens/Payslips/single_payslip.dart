@@ -11,9 +11,9 @@ class _SinglePayslipState extends State<SinglePayslip> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: const Color(0xFFFEF1ED),
       appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
+        backgroundColor: Colors.green,
         elevation: 0,
         // remove the back arrow
         automaticallyImplyLeading: false,
@@ -82,7 +82,7 @@ class _SinglePayslipState extends State<SinglePayslip> {
                       ),
                       TextButton(
                           style: TextButton.styleFrom(
-                            backgroundColor: Colors.deepOrangeAccent,
+                            backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
                             maximumSize: const Size(180, 50),
                             shape: RoundedRectangleBorder(
@@ -115,7 +115,7 @@ class _SinglePayslipState extends State<SinglePayslip> {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.deepOrange)),
+                                color: Colors.green)),
                       ]),
                       SizedBox(height: 10),
                       Row(
@@ -127,7 +127,8 @@ class _SinglePayslipState extends State<SinglePayslip> {
                           SizedBox(
                               child: Text('Peter Ngangi',
                                   style: TextStyle(
-                                      fontSize: 16, color: Colors.green)))
+                                    fontSize: 16,
+                                  )))
                         ],
                       ),
                       SizedBox(

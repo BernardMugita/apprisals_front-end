@@ -12,6 +12,7 @@ class _EndDrawerState extends State<EndDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: const Color(0xFFFEF1ED),
       child: ListView(
         children: [
           const UserAccountsDrawerHeader(
@@ -32,7 +33,8 @@ class _EndDrawerState extends State<EndDrawer> {
           ),
           ListTile(
             title: const Text('Dashboard'),
-            leading: const Icon(Icons.dashboard_outlined),
+            leading:
+                const Icon(Icons.dashboard_outlined, color: Colors.deepOrange),
             onTap: () {
               // Navigate to the user's profile screen
               Navigator.pushNamed(context, '/');
@@ -40,7 +42,8 @@ class _EndDrawerState extends State<EndDrawer> {
           ),
           ListTile(
             title: const Text('Profile'),
-            leading: const Icon(Icons.person_2_outlined),
+            leading:
+                const Icon(Icons.person_2_outlined, color: Colors.deepOrange),
             onTap: () {
               // Navigate to the user's profile screen
               Navigator.pushNamed(context, '/');
@@ -48,7 +51,8 @@ class _EndDrawerState extends State<EndDrawer> {
           ),
           ListTile(
             title: const Text('Notifications'),
-            leading: const Icon(Icons.notifications_outlined),
+            leading: const Icon(Icons.notifications_outlined,
+                color: Colors.deepOrange),
             onTap: () {
               // Navigate to the notifications screen
               Navigator.pushNamed(context, '/');
@@ -56,7 +60,8 @@ class _EndDrawerState extends State<EndDrawer> {
           ),
           ListTile(
             title: const Text('Messages'),
-            leading: const Icon(Icons.message_outlined),
+            leading:
+                const Icon(Icons.message_outlined, color: Colors.deepOrange),
             onTap: () {
               // Navigate to the user's profile screen
               Navigator.pushNamed(context, '/messages');
@@ -64,7 +69,8 @@ class _EndDrawerState extends State<EndDrawer> {
           ),
           ListTile(
             title: const Text('Settings'),
-            leading: const Icon(Icons.settings_outlined),
+            leading:
+                const Icon(Icons.settings_outlined, color: Colors.deepOrange),
             onTap: () {
               // Navigate to the notifications screen
               Navigator.pushNamed(context, '/');
@@ -73,7 +79,7 @@ class _EndDrawerState extends State<EndDrawer> {
           const Divider(), // Add a divider between main items and secondary items
           ListTile(
             title: const Text('Logout'),
-            leading: const Icon(Icons.exit_to_app),
+            leading: const Icon(Icons.exit_to_app, color: Colors.deepOrange),
             onTap: () {
               // Perform logout action
               // You can implement your logout logic here

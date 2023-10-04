@@ -1,6 +1,6 @@
+import 'package:employee_insights/widgets/App_widgets/top_decoration_yellow.dart';
 import 'package:employee_insights/widgets/Employee_widgets/employee_banner.dart';
 import 'package:employee_insights/widgets/Employee_widgets/employee_component.dart';
-import 'package:employee_insights/widgets/App_widgets/top_decoration.dart';
 import 'package:flutter/material.dart';
 
 class EmployeesList extends StatefulWidget {
@@ -13,12 +13,12 @@ class EmployeesList extends StatefulWidget {
 class _EmployeesListState extends State<EmployeesList> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: const SingleChildScrollView(
+    return const Scaffold(
+      backgroundColor: Color(0xFFFEF1ED),
+      body: SingleChildScrollView(
           child: Column(
         children: [
-          TopDecoration(),
+          TopDecorationYellow(),
           EmployeeBanner(),
           EmployeeComponent(),
           EmployeeComponent(),

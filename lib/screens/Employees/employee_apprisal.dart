@@ -11,7 +11,7 @@ class _EmployeeApprisalState extends State<EmployeeApprisal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: const Color(0xFFFEF1ED),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(10),
           physics: const AlwaysScrollableScrollPhysics(),
@@ -24,7 +24,7 @@ class _EmployeeApprisalState extends State<EmployeeApprisal> {
                   const EdgeInsets.only(left: 0, right: 0, top: 40, bottom: 0),
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                  color: Colors.deepOrange,
+                  color: const Color.fromARGB(255, 146, 146, 0),
                   borderRadius: BorderRadius.circular(10)),
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -32,6 +32,11 @@ class _EmployeeApprisalState extends State<EmployeeApprisal> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person_2_outlined,
+                      color: Color.fromARGB(255, 146, 146, 0),
+                      size: 40,
+                    ),
                   ),
                   SizedBox(
                     height: 5,
@@ -124,7 +129,7 @@ class _EmployeeApprisalState extends State<EmployeeApprisal> {
                               Icon(
                                 Icons.task_alt_rounded,
                                 size: 25,
-                                color: Colors.deepOrange,
+                                color: Color.fromARGB(255, 146, 146, 0),
                               ),
                               SizedBox(
                                 width: 10,
@@ -168,7 +173,7 @@ class _EmployeeApprisalState extends State<EmployeeApprisal> {
                               Icon(
                                 Icons.task_alt_rounded,
                                 size: 25,
-                                color: Colors.deepOrange,
+                                color: Color.fromARGB(255, 146, 146, 0),
                               ),
                               SizedBox(
                                 width: 10,
@@ -212,7 +217,7 @@ class _EmployeeApprisalState extends State<EmployeeApprisal> {
                               Icon(
                                 Icons.task_alt_rounded,
                                 size: 25,
-                                color: Colors.deepOrange,
+                                color: Color.fromARGB(255, 146, 146, 0),
                               ),
                               SizedBox(
                                 width: 10,

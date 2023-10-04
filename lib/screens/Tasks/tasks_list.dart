@@ -14,7 +14,7 @@ class _TasksListState extends State<TasksList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: const Color(0xFFFEF1ED),
         body: SingleChildScrollView(
             padding: const EdgeInsets.only(bottom: 20),
             child: Column(
