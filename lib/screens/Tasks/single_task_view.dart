@@ -1,6 +1,6 @@
-import 'package:employee_insights/widgets/feedback_component.dart';
-import 'package:employee_insights/widgets/task_details.dart';
-import 'package:employee_insights/widgets/todos_item.dart';
+import 'package:employee_insights/widgets/Tasks_widgets/feedback_component.dart';
+import 'package:employee_insights/widgets/Tasks_widgets/task_details.dart';
+import 'package:employee_insights/widgets/Tasks_widgets/todos_item.dart';
 import 'package:flutter/material.dart';
 
 class SingleTaskView extends StatefulWidget {

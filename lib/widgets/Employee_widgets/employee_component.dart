@@ -22,8 +22,9 @@ class _EmployeeComponentState extends State<EmployeeComponent> {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.deepOrange,
-                child: Icon(Icons.person_2_outlined, color: Colors.white),
+                backgroundColor: Color.fromARGB(255, 146, 146, 0),
+                child:
+                    Icon(Icons.person_2_outlined, color: Colors.yellowAccent),
                 // backgroundImage: AssetImage(''),
               ),
               SizedBox(

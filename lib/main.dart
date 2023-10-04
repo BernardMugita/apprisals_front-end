@@ -10,7 +10,7 @@ import 'package:employee_insights/screens/Tasks/single_task_view.dart';
 import 'package:employee_insights/screens/Tasks/tasks_list.dart';
 import 'package:employee_insights/screens/User_view/login.dart';
 import 'package:employee_insights/screens/User_view/register.dart';
-import 'package:employee_insights/widgets/end_drawer.dart';
+import 'package:employee_insights/widgets/App_widgets/end_drawer.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
