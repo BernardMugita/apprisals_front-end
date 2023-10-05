@@ -15,29 +15,42 @@ class QuickAccess extends StatefulWidget {
 class _QuickAccessState extends State<QuickAccess> {
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          children: [
-            Gap(15),
-            Text(
-              "Quick Access",
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
-        Gap(15),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [EmployeeCard(), TasksCard()],
-        ),
-        Gap(15),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [NotificationsCard(), PayslipsCard()],
-        )
-      ],
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(10),
+      decoration: const BoxDecoration(),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Gap(15),
+              Text(
+                "Quick Access",
+                style: TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+          Gap(15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(child: EmployeeCard()),
+              Gap(15),
+              Expanded(child: TasksCard())
+            ],
+          ),
+          Gap(15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(child: NotificationsCard()),
+              Gap(15),
+              Expanded(child: PayslipsCard())
+            ],
+          )
+        ],
+      ),
     );
   }
 }

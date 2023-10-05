@@ -17,7 +17,7 @@ class _RegisterState extends State<Register> {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         const SizedBox(height: 50),
         const Text(
-          'Register your Account',
+          'Create an Account',
           style: TextStyle(
               fontSize: 20,
               color: Colors.deepOrange,

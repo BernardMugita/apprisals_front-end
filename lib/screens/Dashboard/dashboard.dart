@@ -23,40 +23,45 @@ class _DashboardState extends State<Dashboard> {
             children: [
               const Gap(30),
               // welcome banner
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Hello! Welcome Back",
-                        style: TextStyle(
-                            fontSize: 14, color: Colors.deepOrange[600]),
-                      ),
-                      const SizedBox(
-                        child: Text(
-                          "Philip Ochieng",
+              Container(
+                padding: const EdgeInsets.only(left: 10, right: 0),
+                margin: const EdgeInsets.only(left: 10, right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Hello! Welcome Back",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                              fontSize: 14, color: Colors.deepOrange[600]),
                         ),
-                      )
-                    ],
-                  ),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: Colors.deepOrange[200],
-                          foregroundColor: Colors.deepOrange),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      child: const Text("Login"))
-                ],
+                        const SizedBox(
+                          child: Text(
+                            "Philip Ochieng",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                        )
+                      ],
+                    ),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: Colors.deepOrange[200],
+                            foregroundColor: Colors.deepOrange),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/login');
+                        },
+                        child: const Text("Login"))
+                  ],
+                ),
               ),
               const Gap(20),
               Container(
                 padding: const EdgeInsets.only(left: 10, right: 0),
+                margin: const EdgeInsets.only(left: 10, right: 10),
                 width: double.infinity,
                 decoration: BoxDecoration(
                     color: Colors.white,

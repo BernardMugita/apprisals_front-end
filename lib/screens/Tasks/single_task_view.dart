@@ -164,7 +164,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                   Expanded(
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey,
+                              backgroundColor: Colors.white,
                               foregroundColor: Colors.red),
                           onPressed: () {},
                           child: const Text(

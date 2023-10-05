@@ -29,9 +29,10 @@ class _TasksListState extends State<TasksList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
+                      Expanded(
+                          child: Container(
                         padding: const EdgeInsets.only(left: 10, right: 0),
-                        width: 270,
+                        width: double.infinity,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15),
@@ -65,7 +66,7 @@ class _TasksListState extends State<TasksList> {
                                       shape: const CircleBorder()),
                                   child: const Icon(Icons.arrow_circle_right))
                             ]),
-                      ),
+                      )),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.deepOrange,

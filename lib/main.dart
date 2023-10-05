@@ -56,6 +56,20 @@ class _RootAppState extends State<RootApp> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey(); // Create a key
 
+  final List<Color> _activeColors = [
+    const Color.fromRGBO(255, 171, 145, 1), // Home
+    Colors.deepOrange, // Search
+    const Color.fromARGB(255, 141, 127, 0), // Favorite
+    Colors.green, // Profile
+  ];
+
+  final List<Color> _inactiveColors = [
+    Colors.grey, // Home
+    Colors.grey, // Search
+    Colors.grey, // Favorite
+    Colors.grey, // Profile
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,8 +80,8 @@ class _RootAppState extends State<RootApp> {
         elevation: 20,
         showSelectedLabels: true,
         showUnselectedLabels: true,
-        selectedItemColor: const Color(0xFF0E3C46),
-        unselectedItemColor: const Color(0x760E3C46),
+        selectedItemColor: _activeColors[_currentIndex],
+        unselectedItemColor: _inactiveColors[_currentIndex],
         selectedLabelStyle: const TextStyle(color: Colors.black),
         unselectedLabelStyle: const TextStyle(color: Colors.black),
         onTap: (int newIndex) {
