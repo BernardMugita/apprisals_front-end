@@ -46,7 +46,7 @@ class _EndDrawerState extends State<EndDrawer> {
                 const Icon(Icons.person_2_outlined, color: Colors.deepOrange),
             onTap: () {
               // Navigate to the user's profile screen
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/profile');
             },
           ),
           ListTile(

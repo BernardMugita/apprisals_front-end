@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:dotted_border/dotted_border.dart';
 
 class CreateNewTask extends StatefulWidget {
   const CreateNewTask({super.key});
@@ -228,6 +229,34 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                   ),
                 ],
               ),
+            ),
+            const Gap(20),
+            const Text(
+              "Attachments",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const Gap(10),
+            DottedBorder(
+              padding: const EdgeInsets.only(top: 30, bottom: 30),
+              strokeWidth: 2,
+              radius: const Radius.circular(15),
+              color: const Color.fromARGB(255, 162, 162, 162),
+              child: Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.upload_rounded,
+                    color: Colors.deepOrange,
+                  ),
+                  TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        "Click here to add attachments",
+                        style: TextStyle(color: Colors.black),
+                      ))
+                ],
+              )),
             ),
             const Gap(20),
             Row(

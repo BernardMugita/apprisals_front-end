@@ -21,7 +21,7 @@ class _NotificationsCardState extends State<NotificationsCard> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               image: const DecorationImage(
-                image: AssetImage('assets/images/notifications.jpg'),
+                image: AssetImage('assets/images/teams.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -46,13 +46,13 @@ class _NotificationsCardState extends State<NotificationsCard> {
                 children: [
                   SizedBox(
                     child: Icon(
-                      Icons.notifications_outlined,
+                      Icons.groups,
                       color: Colors.white,
                       size: 30,
                     ),
                   ),
                   Text(
-                    "Notifications",
+                    "Teams",
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w500),
                   ),

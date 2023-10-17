@@ -5,6 +5,9 @@ import 'package:employee_insights/screens/Messages/messages.dart';
 import 'package:employee_insights/screens/Messages/single_message_view.dart';
 import 'package:employee_insights/screens/Payslips/payslips_list.dart';
 import 'package:employee_insights/screens/Payslips/single_payslip.dart';
+import 'package:employee_insights/screens/Profile/change_password.dart';
+import 'package:employee_insights/screens/Profile/edit_profile.dart';
+import 'package:employee_insights/screens/Profile/profile.dart';
 import 'package:employee_insights/screens/Tasks/create_task.dart';
 import 'package:employee_insights/screens/Tasks/single_task_view.dart';
 import 'package:employee_insights/screens/Tasks/tasks_list.dart';
@@ -16,7 +19,7 @@ import 'package:flutter/material.dart';
 Future<void> main() async {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: '/',
+    initialRoute: '/login',
     routes: {
       '/': (context) => const RootApp(currentIndex: 0),
       '/login': (context) => const Login(),
@@ -31,6 +34,9 @@ Future<void> main() async {
       '/single_slip': (context) => const SinglePayslip(),
       '/messages': (context) => const Messages(),
       '/single_message': (context) => const SingleMessageView(),
+      '/profile': (context) => const Profile(),
+      '/edit_profile': (context) => const EditProfile(),
+      '/change_password': (context) => const ChangePassword()
     },
   ));
 }

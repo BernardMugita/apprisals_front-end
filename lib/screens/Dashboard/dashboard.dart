@@ -1,4 +1,5 @@
 import 'package:employee_insights/widgets/Dash_widgets/quick_access.dart';
+import 'package:employee_insights/widgets/Dash_widgets/recent_tasks.dart';
 import 'package:employee_insights/widgets/Dash_widgets/reviews.dart';
 import 'package:employee_insights/widgets/Dash_widgets/stats_strip.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +98,8 @@ class _DashboardState extends State<Dashboard> {
               ),
               const Gap(20),
               const StatsStrip(),
+              const Gap(20),
+              const RecentTasks(),
               const Gap(20),
               const QuickAccess(),
               const Gap(20),
