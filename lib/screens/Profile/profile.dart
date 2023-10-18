@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/services/user_details_api.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -9,6 +13,35 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  StorageAccess storage = StorageAccess();
+  UserDetailsApi userRequest = UserDetailsApi();
+
+  Map<String, dynamic> userDetails = {};
+
+  Future<void> fetchUserDetails() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
+    final String token = dataMap['token'];
+
+    final userDetailsData = await userRequest.fetchUserDetails(token);
+
+    setState(() {
+      userDetails = userDetailsData;
+    });
+
+    print(userDetails);
+  }
+
+  // run function
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchUserDetails();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,17 +90,17 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                     const Gap(10),
-                    const Text(
-                      "Philip Ochieng'",
-                      style: TextStyle(
+                    Text(
+                      "${userDetails['first_name']} ${userDetails['last_name']}",
+                      style: const TextStyle(
                           color: Colors.deepOrange,
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
                     const Gap(10),
-                    const Text(
-                      "philip@tesla.com",
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    Text(
+                      "${userDetails['email']}",
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
                     )
                   ]),
                 ),
@@ -97,7 +130,7 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.bold),
                         )
                       ]),
-                      const Text("Managing Director")
+                      Text("${userDetails['job_role']}")
                     ],
                   ),
                   const Gap(20),
@@ -121,7 +154,7 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.bold),
                         )
                       ]),
-                      const Text("POchieng'")
+                      Text("${userDetails['username']}")
                     ],
                   ),
                   const Gap(20),
@@ -145,7 +178,7 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.bold),
                         )
                       ]),
-                      const Text("Tesla Inc")
+                      Text("${userDetails['organization']}")
                     ],
                   ),
                   const Gap(20),
@@ -169,7 +202,7 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.bold),
                         )
                       ]),
-                      const Text("+25479345881")
+                      Text("${userDetails['telephone']}")
                     ],
                   ),
                   const Gap(20),
@@ -193,7 +226,13 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.bold),
                         )
                       ]),
-                      const Text("philip@tesla.com")
+                      SizedBox(
+                        width: 150,
+                        child: Text(
+                          "${userDetails['email']}",
+                          textAlign: TextAlign.right,
+                        ),
+                      )
                     ],
                   ),
                 ]),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:employee_insights/screens/Dashboard/dashboard.dart';
 import 'package:employee_insights/screens/Employees/employee_apprisal.dart';
 import 'package:employee_insights/screens/Employees/employees.dart';
@@ -13,13 +14,38 @@ import 'package:employee_insights/screens/Tasks/single_task_view.dart';
 import 'package:employee_insights/screens/Tasks/tasks_list.dart';
 import 'package:employee_insights/screens/User_view/login.dart';
 import 'package:employee_insights/screens/User_view/register.dart';
+import 'package:employee_insights/services/storage.dart';
 import 'package:employee_insights/widgets/App_widgets/end_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+
+StorageAccess storage = StorageAccess();
+
+// Future<bool> checkAuthStatus() async {
+//   final token = await storage.readSecureData('token');
+//   print(token);
+//   return token != null;
+// }
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final userToken = await storage.readSecureData("token");
+  bool isExpired = true;
+  if (userToken != null) {
+    final Map<String, dynamic> jsonMap = jsonDecode(userToken);
+    // Now you can access values from the JSON object.
+    // For example, to get the "token" field:
+    final String token = jsonMap['token'];
+
+    print(JwtDecoder.decode(token));
+
+    isExpired = JwtDecoder.isExpired(token);
+  }
+
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: '/login',
+    initialRoute: userToken != null && !isExpired ? '/' : '/login',
     routes: {
       '/': (context) => const RootApp(currentIndex: 0),
       '/login': (context) => const Login(),
@@ -36,8 +62,37 @@ Future<void> main() async {
       '/single_message': (context) => const SingleMessageView(),
       '/profile': (context) => const Profile(),
       '/edit_profile': (context) => const EditProfile(),
-      '/change_password': (context) => const ChangePassword()
+      '/change_password': (context) => const ChangePassword(),
     },
+    // onGenerateRoute: (settings) {
+    //   return MaterialPageRoute(builder: (context) {
+    //     // Use a FutureBuilder to check authentication status
+    //     return FutureBuilder<bool>(
+    //       future: checkAuthStatus(),
+    //       builder: (context, snapshot) {
+    //         if (snapshot.hasData) {
+    //           final isAuthenticated = snapshot.data!;
+    //           if (isAuthenticated) {
+    //             // User is authenticated, navigate to the requested route
+    //             return settings.name == null
+    //                 ? const RootApp(currentIndex: 0)
+    //                 : const Dashboard(); // Replace with the desired route
+    //           } else {
+    //             // User is not authenticated, redirect to the login page
+    //             return const Login();
+    //           }
+    //         } else if (snapshot.hasError) {
+    //           // Handle the error, e.g., show an error page
+    //           return const Text("ErrorPage"); // Create an ErrorPage widget
+    //         } else {
+    //           // Display a loading indicator while checking the authentication status
+    //           return const Text(
+    //               " LoadingIndicator()"); // Create a LoadingIndicator widget
+    //         }
+    //       },
+    //     );
+    //   });
+    // },
   ));
 }
 

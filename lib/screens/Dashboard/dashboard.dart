@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/services/user_details_api.dart';
 import 'package:employee_insights/widgets/Dash_widgets/quick_access.dart';
 import 'package:employee_insights/widgets/Dash_widgets/recent_tasks.dart';
 import 'package:employee_insights/widgets/Dash_widgets/reviews.dart';
@@ -13,6 +17,35 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  StorageAccess storage = StorageAccess();
+  UserDetailsApi userRequest = UserDetailsApi();
+
+  Map<String, dynamic> userDetails = {};
+
+  Future<void> fetchUserDetails() async {
+    final userToken = await storage.readSecureData('token');
+    if (userToken != null) {
+      final Map<String, dynamic> dataMap = jsonDecode(userToken);
+
+      final String token = dataMap['token'];
+
+      final userDetailsData = await userRequest.fetchUserDetails(token);
+
+      setState(() {
+        userDetails = userDetailsData;
+      });
+    }
+  }
+
+  // run function
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchUserDetails();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,24 +71,17 @@ class _DashboardState extends State<Dashboard> {
                           style: TextStyle(
                               fontSize: 14, color: Colors.deepOrange[600]),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           child: Text(
-                            "Philip Ochieng",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
+                            "${userDetails['first_name']} ${userDetails['last_name']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
                         )
                       ],
                     ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: Colors.deepOrange[200],
-                            foregroundColor: Colors.deepOrange),
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/login');
-                        },
-                        child: const Text("Login"))
                   ],
                 ),
               ),

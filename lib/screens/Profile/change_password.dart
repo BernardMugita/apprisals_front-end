@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:employee_insights/services/change_password_api.dart';
+import 'package:employee_insights/services/get_otp_api.dart';
+import 'package:employee_insights/services/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -9,6 +14,44 @@ class ChangePassword extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
+  StorageAccess storage = StorageAccess();
+  GetOTPAPI otpRequest = GetOTPAPI();
+  ChangePasswordAPI changePasswordRequest = ChangePasswordAPI();
+
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmNewPasswordController =
+      TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
+
+  String newPassword = "";
+  String confirmNewPassword = "";
+  String otp = "";
+
+  Future<void> getOTP() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
+    final String token = dataMap['token'];
+
+    await otpRequest.getOTP(token);
+  }
+
+  Future<void> changePassword() async {
+    final userToken = await storage.readSecureData('token');
+    if (userToken != null) {
+      final Map<String, dynamic> dataMap = jsonDecode(userToken);
+
+      final String token = dataMap['token'];
+
+      otp = _otpController.text.trim();
+      newPassword = _newPasswordController.text.trim();
+      confirmNewPassword = _confirmNewPasswordController.text.trim();
+
+      await changePasswordRequest.changePassword(
+          otp, newPassword, confirmNewPassword, token, context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +114,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         labelStyle: const TextStyle(
                           color: Colors.grey,
                         )),
+                    controller: _otpController,
                   )
                 ],
               ),
@@ -80,6 +124,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                 children: [
                   const Text("Don't have OTP?"),
                   GestureDetector(
+                    onTap: () {
+                      getOTP();
+                    },
                     child: const Text(
                       "Click here",
                       style: TextStyle(color: Colors.blue),
@@ -115,6 +162,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         labelStyle: const TextStyle(
                           color: Colors.grey,
                         )),
+                    controller: _newPasswordController,
                   )
                 ],
               ),
@@ -146,6 +194,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         labelStyle: const TextStyle(
                           color: Colors.grey,
                         )),
+                    controller: _confirmNewPasswordController,
                   )
                 ],
               ),
@@ -157,13 +206,15 @@ class _ChangePasswordState extends State<ChangePassword> {
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     onPressed: () {},
-                    child: const Text("Discard"),
+                    child: const Text("Cancel"),
                   )),
                   const Gap(10),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green),
-                      onPressed: () {},
+                      onPressed: () {
+                        changePassword();
+                      },
                       child: const Text(
                         "Change Password",
                       ))

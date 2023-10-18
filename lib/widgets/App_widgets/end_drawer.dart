@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/services/user_details_api.dart';
 import 'package:flutter/material.dart';
 
 class EndDrawer extends StatefulWidget {
@@ -8,17 +12,50 @@ class EndDrawer extends StatefulWidget {
 }
 
 class _EndDrawerState extends State<EndDrawer> {
+  StorageAccess storage = StorageAccess();
+  UserDetailsApi userRequest = UserDetailsApi();
+
+  Future<void> logoutUser() async {
+    await storage.deleteSecureData('token');
+    Navigator.pushNamed(context, '/login');
+  }
+
+  Map<String, dynamic> userDetails = {};
+
+  Future<void> fetchUserDetails() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
+    final String token = dataMap['token'];
+
+    final userDetailsData = await userRequest.fetchUserDetails(token);
+
+    setState(() {
+      userDetails = userDetailsData;
+    });
+  }
+
+  // run function
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchUserDetails();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: const Color(0xFFFEF1ED),
       child: ListView(
         children: [
-          const UserAccountsDrawerHeader(
-            accountName: Text("JeromeMugita"), // Display user's name
-            accountEmail: Text("mugita@gmail.com"), // Display user's email
-            currentAccountPicture: CircleAvatar(
+          UserAccountsDrawerHeader(
+            accountName:
+                Text("${userDetails['username']}"), // Display user's name
+            accountEmail:
+                Text("${userDetails['email']}"), // Display user's email
+            currentAccountPicture: const CircleAvatar(
               radius: 20,
               backgroundColor: Colors.white,
               child: Icon(
@@ -27,7 +64,7 @@ class _EndDrawerState extends State<EndDrawer> {
                 size: 40,
               ),
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.deepOrange,
             ),
           ),
@@ -82,7 +119,7 @@ class _EndDrawerState extends State<EndDrawer> {
             leading: const Icon(Icons.exit_to_app, color: Colors.deepOrange),
             onTap: () {
               // Perform logout action
-              // You can implement your logout logic here
+              logoutUser();
             },
           ),
         ],

@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:employee_insights/screens/Profile/first_time_change.dart';
 import 'package:employee_insights/services/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -36,9 +38,21 @@ class _LoginState extends State<Login> {
     );
 
     if (response.statusCode == 200) {
-      final decodedToken = jsonDecode(response.body);
-      await storage.writeSecureData('token', decodedToken);
-      Navigator.pushReplacementNamed(context, '/');
+      print(response.body);
+      final responseData = jsonDecode(response.body);
+      final userData = JwtDecoder.decode(responseData['token']);
+      print(userData);
+      if (userData['has_changed_pass'] == true) {
+        await storage.writeSecureData('token', response.body);
+        Navigator.pushNamed(context, '/');
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FirstTimeChange(userData: userData),
+          ),
+        );
+      }
     } else {}
   }
 
@@ -188,11 +202,6 @@ class _LoginState extends State<Login> {
                       )
                     ],
                   ),
-                  TextButton(
-                      onPressed: () {
-                        showLoginInfo();
-                      },
-                      child: const Text("click I"))
                 ],
               ),
             ),
