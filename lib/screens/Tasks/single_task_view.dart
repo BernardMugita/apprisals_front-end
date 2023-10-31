@@ -1,3 +1,4 @@
+import 'package:employee_insights/widgets/Tasks_widgets/attachment_component.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/feedback_component.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/task_details.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/todos_item.dart';
@@ -18,6 +19,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         backgroundColor: const Color(0xFFFEF1ED),
         body: SingleChildScrollView(
           child: Column(children: [
+            const Gap(20),
             Container(
                 margin: const EdgeInsets.only(
                     left: 10, right: 10, top: 50, bottom: 10),
@@ -25,21 +27,23 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                     left: 10, right: 10, top: 20, bottom: 20),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                    color: Colors.deepOrange,
+                    color: Colors.deepOrange[200],
                     borderRadius: BorderRadius.circular(10)),
                 child: Column(children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
                         onTap: () {
                           Navigator.pop(context);
                         },
                         child: const Icon(
-                          Icons.arrow_back,
+                          Icons.arrow_back_ios_new,
                           color: Colors.white,
                           size: 16,
                         ),
                       ),
+                      const Icon(Icons.reorder, color: Colors.white, size: 16),
                     ],
                   ),
                   const SizedBox(
@@ -55,7 +59,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                             "TaskID:",
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 12,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
@@ -63,8 +67,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           ),
                           Text("00JHGQO",
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
                               )),
                         ],
                       ),
@@ -74,16 +79,16 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           Text("Date Assigned:",
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 12,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold)),
                           SizedBox(
                             width: 10,
                           ),
                           Text("dd/mm/yyyy",
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                              )),
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       )
                     ],
@@ -94,7 +99,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                       Text("Title:",
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 12,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold)),
                       SizedBox(
                         width: 10,
@@ -104,7 +109,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            color: Colors.black),
                       ),
                     ],
                   ),
@@ -119,9 +124,24 @@ class _SingleTaskViewState extends State<SingleTaskView> {
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Task Description:",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Task Description",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.deepOrangeAccent),
+                        ),
+                        Icon(
+                          Icons.bookmark_sharp,
+                          color: Colors.deepOrangeAccent,
+                          size: 20,
+                        )
+                      ]),
+                  Divider(
+                    color: Colors.grey,
                   ),
                   Gap(10),
                   SizedBox(
@@ -134,29 +154,80 @@ class _SingleTaskViewState extends State<SingleTaskView> {
             ),
             const Gap(10),
             Container(
-                height: 250,
+                height: 260,
                 padding: const EdgeInsets.all(10),
                 margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10)),
-                child: const SingleChildScrollView(
-                    child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "To do's:",
+                      "Sub-tasks",
                       textAlign: TextAlign.left,
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepOrangeAccent),
                     ),
-                    TodosItem(),
-                    TodosItem(),
-                    TodosItem(),
-                    TodosItem(),
-                    TodosItem(),
+                    Divider(
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 200,
+                      child: SingleChildScrollView(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TodosItem(),
+                          TodosItem(),
+                          TodosItem(),
+                          TodosItem(),
+                          TodosItem(),
+                        ],
+                      )),
+                    )
                   ],
-                ))),
+                )),
+            const Gap(10),
+            Container(
+              decoration: const BoxDecoration(color: Colors.transparent),
+              width: double.infinity,
+              margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              child: Column(children: [
+                const Row(
+                  children: [
+                    Icon(Icons.attachment_outlined),
+                    Gap(5),
+                    Text(
+                      "Attachments",
+                      style: TextStyle(
+                          color: Colors.deepOrange,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    )
+                  ],
+                ),
+                Divider(
+                  color: Colors.deepOrangeAccent[200],
+                ),
+                const Gap(10),
+                const SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      AttachmentComponent(),
+                      AttachmentComponent(),
+                      AttachmentComponent(),
+                      AttachmentComponent(),
+                      AttachmentComponent(),
+                    ],
+                  ),
+                ),
+              ]),
+            ),
+            const Gap(20),
             Container(
               margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
               child: Row(
@@ -169,7 +240,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           onPressed: () {},
                           child: const Text(
                             "Dispute",
-                            style: TextStyle(fontSize: 10),
+                            style: TextStyle(fontSize: 14),
                           ))),
                   const SizedBox(
                     width: 10,
@@ -182,7 +253,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           onPressed: () {},
                           child: const Text(
                             "Mark as done",
-                            style: TextStyle(fontSize: 10),
+                            style: TextStyle(fontSize: 14),
                           )))
                 ],
               ),

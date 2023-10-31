@@ -17,13 +17,13 @@ class _TodosItemState extends State<TodosItem> {
       children: [
         const Row(
           children: [
-            Icon(Icons.star_border_rounded, color: Color(0xFF008000)),
+            Icon(Icons.assignment, color: Color(0xFF008000)),
             SizedBox(
               width: 10,
             ),
             Text(
               "Create a bottom navigation bar",
-              style: TextStyle(fontSize: 11),
+              style: TextStyle(fontSize: 14, color: Colors.black),
             ),
           ],
         ),

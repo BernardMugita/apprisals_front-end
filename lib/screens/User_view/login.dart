@@ -38,10 +38,8 @@ class _LoginState extends State<Login> {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       final responseData = jsonDecode(response.body);
       final userData = JwtDecoder.decode(responseData['token']);
-      print(userData);
       if (userData['has_changed_pass'] == true) {
         await storage.writeSecureData('token', response.body);
         Navigator.pushNamed(context, '/');
@@ -71,15 +69,17 @@ class _LoginState extends State<Login> {
         backgroundColor: const Color(0xFFFEF1ED),
         body: SingleChildScrollView(
           child: Container(
+            height: 900,
             padding: const EdgeInsets.only(left: 30, right: 30),
             decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(30),
             ),
-            child: Form(
+            child: Center(
+                child: Form(
               child: Column(
                 children: <Widget>[
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 200),
                   const CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.deepOrangeAccent,
@@ -204,7 +204,7 @@ class _LoginState extends State<Login> {
                   ),
                 ],
               ),
-            ),
+            )),
           ),
         ));
   }

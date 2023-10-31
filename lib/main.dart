@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:employee_insights/screens/Dashboard/dashboard.dart';
 import 'package:employee_insights/screens/Employees/employee_apprisal.dart';
 import 'package:employee_insights/screens/Employees/employees.dart';
+import 'package:employee_insights/screens/Employees/register_employee.dart';
 import 'package:employee_insights/screens/Messages/messages.dart';
 import 'package:employee_insights/screens/Messages/single_message_view.dart';
 import 'package:employee_insights/screens/Payslips/payslips_list.dart';
@@ -63,6 +64,7 @@ Future<void> main() async {
       '/profile': (context) => const Profile(),
       '/edit_profile': (context) => const EditProfile(),
       '/change_password': (context) => const ChangePassword(),
+      '/register_employee': (context) => const RegisterEmployee()
     },
     // onGenerateRoute: (settings) {
     //   return MaterialPageRoute(builder: (context) {

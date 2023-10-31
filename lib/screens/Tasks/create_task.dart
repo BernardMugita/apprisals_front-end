@@ -39,7 +39,7 @@ class _CreateNewTaskState extends State<CreateNewTask> {
         foregroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, size: 14),
+          icon: const Icon(Icons.arrow_back_ios_new, size: 16),
           onPressed: () {
             Navigator.pop(context);
           },

@@ -24,10 +24,10 @@ class _TaskComponentState extends State<TaskComponent> {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Container(
                 height: 100,
-                width: 90,
+                width: 5,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: Colors.deepOrange[200],
+                    color: Colors.deepOrange,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5), // Shadow color
@@ -37,15 +37,6 @@ class _TaskComponentState extends State<TaskComponent> {
                             0, 3), // Offset from the top-left corner
                       ),
                     ]),
-                child: Center(
-                    child: CircleAvatar(
-                  backgroundColor: Colors.deepOrange[200],
-                  child: const Icon(
-                    Icons.task_alt_rounded,
-                    color: Colors.deepOrange,
-                    size: 30,
-                  ),
-                )),
               ),
               const Gap(3),
               Expanded(
@@ -62,9 +53,9 @@ class _TaskComponentState extends State<TaskComponent> {
                       Text("Create UI Components",
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          )),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepOrangeAccent)),
                       Row(
                         children: [
                           Icon(
@@ -78,7 +69,11 @@ class _TaskComponentState extends State<TaskComponent> {
                           Text(
                             "Assigned to",
                             style: TextStyle(color: Colors.grey, fontSize: 14),
-                          )
+                          ),
+                          Spacer(),
+                          Text("Employee name",
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 14))
                         ],
                       ),
                       Row(
@@ -94,7 +89,11 @@ class _TaskComponentState extends State<TaskComponent> {
                           Text(
                             "Due date",
                             style: TextStyle(color: Colors.grey, fontSize: 14),
-                          )
+                          ),
+                          Spacer(),
+                          Text("dd/mm/yyyy",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 14))
                         ],
                       ),
                       Row(
@@ -110,7 +109,11 @@ class _TaskComponentState extends State<TaskComponent> {
                           Text(
                             "Status",
                             style: TextStyle(color: Colors.grey, fontSize: 14),
-                          )
+                          ),
+                          Spacer(),
+                          Text("In progress",
+                              style:
+                                  TextStyle(color: Colors.green, fontSize: 14))
                         ],
                       )
                     ],

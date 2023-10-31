@@ -55,7 +55,7 @@ class _DashboardState extends State<Dashboard> {
               const EdgeInsets.only(left: 10, right: 10, top: 30, bottom: 30),
           child: Column(
             children: [
-              const Gap(30),
+              const Gap(50),
               // welcome banner
               Container(
                 padding: const EdgeInsets.only(left: 10, right: 0),
