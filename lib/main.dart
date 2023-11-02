@@ -33,7 +33,7 @@ Future<void> main() async {
 
   final userToken = await storage.readSecureData("token");
   bool isExpired = true;
-  if (userToken != null && userToken.contains("User does not exist")) {
+  if (userToken != null && !userToken.contains("User does not exist")) {
     final Map<String, dynamic> jsonMap = jsonDecode(userToken);
     final String token = jsonMap['token'];
     isExpired = JwtDecoder.isExpired(token);
@@ -41,7 +41,7 @@ Future<void> main() async {
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: !isExpired ? '/' : '/login',
+    initialRoute: isExpired ? '/login' : '/',
     routes: {
       '/': (context) => const RootApp(currentIndex: 0),
       '/login': (context) => const Login(),

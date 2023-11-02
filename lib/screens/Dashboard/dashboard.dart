@@ -24,13 +24,13 @@ class _DashboardState extends State<Dashboard> {
 
   Future<void> fetchUserDetails() async {
     final userToken = await storage.readSecureData('token');
-    if (userToken != null && userToken.contains("User does not exist")) {
+    if (userToken != null && !userToken.contains("User does not exist")) {
       final Map<String, dynamic> dataMap = jsonDecode(userToken);
 
       final String token = dataMap['token'];
 
       final userDetailsData = await userRequest.fetchUserDetails(token);
-
+      print(userDetailsData);
       setState(() {
         userDetails = userDetailsData;
       });
