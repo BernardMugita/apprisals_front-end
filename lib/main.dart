@@ -33,7 +33,9 @@ Future<void> main() async {
 
   final userToken = await storage.readSecureData("token");
   bool isExpired = true;
-  if (userToken != null) {
+    print(userToken!.contains("User does not exist"));
+  if  (userToken.contains("User does not exist") == false) {
+    print('running');
     final Map<String, dynamic> jsonMap = jsonDecode(userToken);
     // Now you can access values from the JSON object.
     // For example, to get the "token" field:
@@ -46,7 +48,7 @@ Future<void> main() async {
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: userToken != null && !isExpired ? '/' : '/login',
+    initialRoute: !isExpired ? '/' : '/login',
     routes: {
       '/': (context) => const RootApp(currentIndex: 0),
       '/login': (context) => const Login(),

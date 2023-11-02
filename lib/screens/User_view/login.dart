@@ -42,13 +42,13 @@ class _LoginState extends State<Login> {
       print(responseData);
       final userData = JwtDecoder.decode(responseData['token']);
       if (userData['has_changed_pass'] == true) {
-        await storage.writeSecureData('token', response.body);
+        await storage.writeSecureData('token',responseData['token']);
         Navigator.pushNamed(context, '/');
       } else {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => FirstTimeChange(userData: userData),
+            builder: (context) => FirstTimeChange(userData: responseData),
           ),
         );
       }
