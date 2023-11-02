@@ -12,7 +12,7 @@ class FirstPassChangeAPI {
       if (password != confirmPassword) {
         print("Passwords do not match");
       } else {
-        final url = Uri.parse("http://10.0.2.2:8000/firsttimechange");
+        final url = Uri.parse("http://10.0.2.2:8000/users/firsttimechange");
 
         final request = await http.post(url,
             headers: <String, String>{

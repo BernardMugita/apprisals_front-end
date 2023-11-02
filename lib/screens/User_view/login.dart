@@ -23,7 +23,7 @@ class _LoginState extends State<Login> {
 
   Future<void> authenticateUser(String organization, String username,
       String password, BuildContext context) async {
-    final url = Uri.parse('http://10.0.2.2:8000/login');
+    final url = Uri.parse('http://10.0.2.2:8000/users/login');
 
     final response = await http.post(
       url,
@@ -39,6 +39,7 @@ class _LoginState extends State<Login> {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
+      print(responseData);
       final userData = JwtDecoder.decode(responseData['token']);
       if (userData['has_changed_pass'] == true) {
         await storage.writeSecureData('token', response.body);

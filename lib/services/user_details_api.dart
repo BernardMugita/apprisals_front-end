@@ -7,7 +7,7 @@ class UserDetailsApi {
 
     // get request for user details
 
-    final url = Uri.parse('http://10.0.2.2:8000/getbyid');
+    final url = Uri.parse('http://10.0.2.2:8000/users/getbyid');
 
     final request = await http.post(url, headers: <String, String>{
       'Content-Type': 'application/json',
