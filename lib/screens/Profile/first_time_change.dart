@@ -25,15 +25,15 @@ class _FirstTimeChangeState extends State<FirstTimeChange> {
 
   Future<void> changePassword() async {
     final userToken = widget.userData;
+    print(userToken);
     final token = userToken['token'];
-    final newtoken = await storage.readSecureData('token');
 
     password = _passwordController.text.trim();
     confirmPassword = _confirmPasswordController.text.trim();
     print(password);
     print(confirmPassword);
     print(token);
-    
+
     await passRequest.changePassword(password, confirmPassword, token, context);
   }
 

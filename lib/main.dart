@@ -27,22 +27,15 @@ StorageAccess storage = StorageAccess();
 //   print(token);
 //   return token != null;
 // }
-
+//
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final userToken = await storage.readSecureData("token");
   bool isExpired = true;
-    print(userToken!.contains("User does not exist"));
-  if  (userToken.contains("User does not exist") == false) {
-    print('running');
+  if (userToken != null && userToken.contains("User does not exist")) {
     final Map<String, dynamic> jsonMap = jsonDecode(userToken);
-    // Now you can access values from the JSON object.
-    // For example, to get the "token" field:
     final String token = jsonMap['token'];
-
-    print(JwtDecoder.decode(token));
-
     isExpired = JwtDecoder.isExpired(token);
   }
 

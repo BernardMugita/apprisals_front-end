@@ -24,15 +24,17 @@ class _EndDrawerState extends State<EndDrawer> {
 
   Future<void> fetchUserDetails() async {
     final userToken = await storage.readSecureData('token');
-    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+    if (userToken != null && userToken.contains("User does not exist")) {
+      final Map<String, dynamic> dataMap = jsonDecode(userToken!);
 
-    final String token = dataMap['token'];
+      final String token = dataMap['token'];
 
-    final userDetailsData = await userRequest.fetchUserDetails(token);
+      final userDetailsData = await userRequest.fetchUserDetails(token);
 
-    setState(() {
-      userDetails = userDetailsData;
-    });
+      setState(() {
+        userDetails = userDetailsData;
+      });
+    }
   }
 
   // run function

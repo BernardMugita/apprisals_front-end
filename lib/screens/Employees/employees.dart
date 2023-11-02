@@ -20,11 +20,14 @@ class _EmployeesListState extends State<EmployeesList> {
 
   Future<void> getEmployees() async {
     final userToken = await storage.readSecureData('token');
-    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+    if (userToken != null && userToken.contains("User does not exist")) {
+      final Map<String, dynamic> dataMap = jsonDecode(userToken);
 
-    final String token = dataMap['token'];
-    final employees = await getEmployeesRequest.getEmployees(jsonEncode(token));
-    print(employees);
+      final String token = dataMap['token'];
+      final employees =
+          await getEmployeesRequest.getEmployees(jsonEncode(token));
+      print(employees);
+    }
   }
 
   @override

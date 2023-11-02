@@ -39,10 +39,10 @@ class _LoginState extends State<Login> {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      print(responseData);
       final userData = JwtDecoder.decode(responseData['token']);
+      print(userData);
       if (userData['has_changed_pass'] == true) {
-        await storage.writeSecureData('token',responseData['token']);
+        await storage.writeSecureData('token', response.body);
         Navigator.pushNamed(context, '/');
       } else {
         Navigator.push(
