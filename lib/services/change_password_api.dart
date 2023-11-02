@@ -12,7 +12,7 @@ class ChangePasswordAPI {
       if (newPassword != confirmNewPassword) {
         print("Passwords do not match");
       } else {
-        final url = Uri.parse("http://10.0.2.2:8000/changepass");
+        final url = Uri.parse("http://10.0.2.2:8000/users/changepass");
 
         final request = await http.post(url,
             headers: <String, String>{
