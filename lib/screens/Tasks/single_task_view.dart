@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class SingleTaskView extends StatefulWidget {
-  const SingleTaskView({super.key});
+  final Map<String, dynamic> createdTask;
+  const SingleTaskView({Key? key, required this.createdTask}) : super(key: key);
 
   @override
   State<SingleTaskView> createState() => _SingleTaskViewState();
@@ -15,6 +16,7 @@ class SingleTaskView extends StatefulWidget {
 class _SingleTaskViewState extends State<SingleTaskView> {
   @override
   Widget build(BuildContext context) {
+    print(widget.createdTask);
     return Scaffold(
         backgroundColor: const Color(0xFFFEF1ED),
         body: SingleChildScrollView(

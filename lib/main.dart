@@ -32,6 +32,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final userToken = await storage.readSecureData("token");
+  // print(userToken);
   bool isExpired = true;
   if (userToken != null && !userToken.contains("User does not exist")) {
     final Map<String, dynamic> jsonMap = jsonDecode(userToken);
@@ -48,7 +49,9 @@ Future<void> main() async {
       '/register': (context) => const Register(),
       '/dashboard': (context) => const Dashboard(),
       '/tasks': (context) => const TasksList(),
-      '/singletask': (context) => const SingleTaskView(),
+      '/singletask': (context) => const SingleTaskView(
+            createdTask: {},
+          ),
       '/createtask': (context) => const CreateNewTask(),
       '/employees': (context) => const EmployeesList(),
       '/employee_apprisal': (context) => const EmployeeApprisal(),

@@ -17,16 +17,17 @@ class EmployeesList extends StatefulWidget {
 class _EmployeesListState extends State<EmployeesList> {
   StorageAccess storage = StorageAccess();
   GetEmployeesAPI getEmployeesRequest = GetEmployeesAPI();
+  List<Map<String, dynamic>> employeeData = [];
 
   Future<void> getEmployees() async {
     final userToken = await storage.readSecureData('token');
-    if (userToken != null && userToken.contains("User does not exist")) {
+    if (userToken != null && !userToken.contains("User does not exist")) {
       final Map<String, dynamic> dataMap = jsonDecode(userToken);
-
       final String token = dataMap['token'];
-      final employees =
-          await getEmployeesRequest.getEmployees(jsonEncode(token));
-      print(employees);
+      final employees = await getEmployeesRequest.getEmployees(token);
+      setState(() {
+        employeeData = employees;
+      });
     }
   }
 
@@ -52,14 +53,16 @@ class _EmployeesListState extends State<EmployeesList> {
             "Register Employee",
             style: TextStyle(color: Colors.white),
           )),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
           child: Column(
         children: [
-          TopDecorationYellow(),
-          EmployeeBanner(),
-          EmployeeComponent(),
-          EmployeeComponent(),
-          EmployeeComponent()
+          const TopDecorationYellow(),
+          const EmployeeBanner(),
+          // map employeeData onto EmployeeComponent
+          for (var employee in employeeData)
+            EmployeeComponent(
+              employee: employee,
+            ),
         ],
       )),
     );

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class EmployeeComponent extends StatefulWidget {
-  const EmployeeComponent({super.key});
+  final Map<String, dynamic> employee;
+  const EmployeeComponent({Key? key, required this.employee}) : super(key: key);
 
   @override
   State<EmployeeComponent> createState() => _EmployeeComponentState();
@@ -10,6 +11,7 @@ class EmployeeComponent extends StatefulWidget {
 class _EmployeeComponentState extends State<EmployeeComponent> {
   @override
   Widget build(BuildContext context) {
+    final employeeDetails = widget.employee;
     return GestureDetector(
       child: Container(
           padding: const EdgeInsets.all(10),
@@ -18,31 +20,33 @@ class _EmployeeComponentState extends State<EmployeeComponent> {
             color: Colors.white,
             // borderRadius: BorderRadius.circular(10),
           ),
-          child: const Row(
+          child: Row(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 20,
                 backgroundColor: Color.fromARGB(255, 146, 146, 0),
                 child:
                     Icon(Icons.person_2_outlined, color: Colors.yellowAccent),
                 // backgroundImage: AssetImage(''),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Employee Name',
-                    style: TextStyle(
+                    employeeDetails['first_name'] +
+                        " " +
+                        employeeDetails['last_name'],
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    'Employee Position',
-                    style: TextStyle(
+                    employeeDetails['job_role'],
+                    style: const TextStyle(
                       fontSize: 12,
                     ),
                   ),

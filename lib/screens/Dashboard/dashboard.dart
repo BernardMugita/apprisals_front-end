@@ -30,7 +30,7 @@ class _DashboardState extends State<Dashboard> {
       final String token = dataMap['token'];
 
       final userDetailsData = await userRequest.fetchUserDetails(token);
-      print(userDetailsData);
+      // print(userDetailsData);
       setState(() {
         userDetails = userDetailsData;
       });

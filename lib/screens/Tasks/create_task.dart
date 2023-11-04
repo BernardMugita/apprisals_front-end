@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:employee_insights/services/create_task_api.dart';
+import 'package:employee_insights/services/get_employees_api.dart';
+import 'package:employee_insights/services/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class CreateNewTask extends StatefulWidget {
   const CreateNewTask({super.key});
@@ -11,11 +17,23 @@ class CreateNewTask extends StatefulWidget {
 
 class _CreateNewTaskState extends State<CreateNewTask> {
   int? selectedValue;
+  Map<String, dynamic>? selectedEmployee;
 
   DateTime? selectedDate = DateTime.now();
   DateTime firstDate = DateTime(DateTime.now().year - 1);
   DateTime lastDate = DateTime(DateTime.now().year + 1);
+  StorageAccess storage = StorageAccess();
+  GetEmployeesAPI getEmployeesRequest = GetEmployeesAPI();
+  CreateTaskAPI createTaskAPI = CreateTaskAPI();
+  List<Map<String, dynamic>> employeeData = [];
+  Map<String, dynamic>? createdTask;
 
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _statusController = TextEditingController();
+  final TextEditingController _taskTypeController = TextEditingController();
+
+  // Date picker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -30,8 +48,63 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     }
   }
 
+  // get all employees
+  Future<void> getEmployees() async {
+    final userToken = await storage.readSecureData('token');
+    if (userToken != null && !userToken.contains("User does not exist")) {
+      final Map<String, dynamic> dataMap = jsonDecode(userToken);
+      final String token = dataMap['token'];
+      final employees = await getEmployeesRequest.getEmployees(token);
+      setState(() {
+        employeeData = employees;
+      });
+    }
+  }
+
+  // create task
+  Future<Map<String, dynamic>> createTask() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+    final String token = dataMap['token'];
+    final decodedToken = JwtDecoder.decode(token);
+    final createdById = decodedToken['id'];
+    final newTask = await createTaskAPI.createTask(
+        token,
+        _titleController.text,
+        _descriptionController.text,
+        _statusController.text,
+        selectedEmployee!['id'],
+        createdById,
+        _taskTypeController.text,
+        "0",
+        "Awaiting feedback",
+        selectedDate.toString());
+    setState(() {
+      createdTask = newTask;
+    });
+
+    // push the task data to single task view to be accessed as prop
+
+    Navigator.pushNamed(
+      context,
+      '/singletask',
+      arguments: createdTask,
+    );
+
+    return {};
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getEmployees();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(createdTask);
     return Scaffold(
       backgroundColor: const Color(0xFFFEF1ED),
       appBar: AppBar(
@@ -61,50 +134,64 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                   fontWeight: FontWeight.bold),
             ),
             const Gap(10),
-            const TextField(
-              decoration: InputDecoration(hintText: "Task name"),
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(hintText: "Task name"),
             ),
             const Gap(10),
-            const TextField(
-              decoration: InputDecoration(hintText: 'Enter task description'),
+            TextField(
+              controller: _descriptionController,
+              decoration:
+                  const InputDecoration(hintText: 'Enter task description'),
               maxLines: null,
             ),
             const Gap(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Task Type:",
-                  style: TextStyle(fontSize: 12),
-                ),
-                DropdownButton(
-                  hint: const Text(
-                    '- - - select - - -',
-                    style: TextStyle(fontSize: 12),
+            Container(
+              color: Colors.transparent,
+              width: double.infinity, // Set a fixed width to constrain the row
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Task Type:",
+                    style: TextStyle(fontSize: 14),
                   ),
-                  items: const [
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text(
-                        "Individual task",
+                  const Spacer(),
+                  // Wrap the DropdownButton with an Expanded widget to constrain its width
+                  Expanded(
+                    child: DropdownButton<String>(
+                      hint: const Text(
+                        '- - - select - - -',
                         style: TextStyle(fontSize: 12),
                       ),
+                      value: _taskTypeController.text.isNotEmpty
+                          ? _taskTypeController.text
+                          : 'individual',
+                      items: const [
+                        DropdownMenuItem<String>(
+                          value: "individual",
+                          child: Text(
+                            "Individual task",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: "group",
+                          child: Text(
+                            "Group task",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _taskTypeController.text = value!;
+                        });
+                      },
                     ),
-                    DropdownMenuItem(
-                      value: 2,
-                      child: Text(
-                        "Group task",
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                )
-              ],
+                  )
+                ],
+              ),
             ),
             const Gap(10),
             const Text(
@@ -130,25 +217,28 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                           '- - - select - - -',
                           style: TextStyle(fontSize: 12),
                         ),
+                        value: _statusController.text.isNotEmpty
+                            ? _statusController.text
+                            : 'in_progress',
                         items: const [
                           DropdownMenuItem(
-                            value: 1,
+                            value: "in_progress",
                             child: Text(
-                              "To do",
+                              "In progress",
                               style: TextStyle(fontSize: 12),
                             ),
                           ),
                           DropdownMenuItem(
-                            value: 2,
+                            value: "pending",
                             child: Text(
-                              "Done",
+                              "Pending",
                               style: TextStyle(fontSize: 12),
                             ),
                           ),
                         ],
                         onChanged: (value) {
                           setState(() {
-                            selectedValue = value;
+                            _statusController.text = value!;
                           });
                         },
                       )
@@ -163,30 +253,25 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                       ),
                       DropdownButton(
                         hint: const Text(
-                          '- - - select employee- - -',
+                          '- - - select employee - - -',
                           style: TextStyle(fontSize: 12, color: Colors.black),
                         ),
-                        items: const [
-                          DropdownMenuItem(
-                            value: 1,
+                        value: selectedEmployee, // Change the type here
+                        items: employeeData.map((employee) {
+                          return DropdownMenuItem(
+                            value:
+                                employee, // Change this to the whole employee map
                             child: Text(
-                              "Chama Joshua",
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.black),
+                              '${employee['first_name']} ${employee['last_name']}',
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.black),
                             ),
-                          ),
-                          DropdownMenuItem(
-                            value: 2,
-                            child: Text(
-                              "Chris Hurashio",
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.black),
-                            ),
-                          ),
-                        ],
+                          );
+                        }).toList(),
                         onChanged: (value) {
                           setState(() {
-                            selectedValue = value;
+                            selectedEmployee =
+                                value; // Change this to the whole employee map
                           });
                         },
                       )
@@ -267,7 +352,9 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                             elevation: 0,
                             backgroundColor: Colors.deepOrange,
                             padding: const EdgeInsets.all(10)),
-                        onPressed: () {},
+                        onPressed: () {
+                          createTask();
+                        },
                         child: const Text('Create Task',
                             style: TextStyle(fontSize: 12))))
               ],

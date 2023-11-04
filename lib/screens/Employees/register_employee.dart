@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:employee_insights/services/create_employee_account_api.dart';
+import 'package:employee_insights/services/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class RegisterEmployee extends StatefulWidget {
   const RegisterEmployee({super.key});
@@ -10,6 +15,40 @@ class RegisterEmployee extends StatefulWidget {
 }
 
 class RegisterEmployeeState extends State<RegisterEmployee> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastnameController = TextEditingController();
+  final TextEditingController _roleController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _telephoneController = TextEditingController();
+  final TextEditingController _jobRoleController = TextEditingController();
+  StorageAccess storage = StorageAccess();
+  CreateEmployeeAccountApi createEmployeeAccountApi =
+      CreateEmployeeAccountApi();
+
+  Future<void> _createEmployee() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
+    final String token = dataMap['token'];
+
+    final decodedToken = JwtDecoder.decode(token);
+
+    final organizationName = decodedToken['organization'];
+
+    await createEmployeeAccountApi.createEmployee(
+        token,
+        _usernameController.text,
+        _firstNameController.text,
+        _lastnameController.text,
+        _roleController.text,
+        _emailController.text,
+        organizationName,
+        _telephoneController.text,
+        _jobRoleController.text,
+        context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +94,7 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
             child: Column(children: [
               const Gap(20),
               TextFormField(
+                controller: _usernameController,
                 decoration: const InputDecoration(
                     icon: Icon(FontAwesomeIcons.solidUser),
                     labelText: "Username",
@@ -67,6 +107,7 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
               ),
               const Gap(10),
               TextFormField(
+                controller: _firstNameController,
                 decoration: const InputDecoration(
                     icon: Icon(Icons.label_important),
                     labelText: "First Name",
@@ -79,6 +120,7 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
               ),
               const Gap(10),
               TextFormField(
+                controller: _lastnameController,
                 decoration: const InputDecoration(
                     icon: Icon(Icons.label_important),
                     labelText: "Last Name",
@@ -90,7 +132,38 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
                             BorderSide(color: Colors.deepOrangeAccent))),
               ),
               const Gap(10),
+              // drops down a list of roles
+              DropdownButtonFormField<String>(
+                value: _roleController.text.isNotEmpty
+                    ? _roleController.text
+                    : '--Select Role--',
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.admin_panel_settings_rounded),
+                  labelText: 'Role',
+                  contentPadding: EdgeInsets.only(left: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(0)),
+                    borderSide: BorderSide(color: Colors.deepOrangeAccent),
+                  ),
+                ),
+                items: <String>['--Select Role--', 'Admin', 'User']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value, // The value associated with this item
+                    child: Text(value), // The text displayed for this item
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    // Update the selected value when the user makes a selection
+                    _roleController.text =
+                        newValue ?? ''; // Use null-aware operator
+                  });
+                },
+              ),
+              const Gap(10),
               TextFormField(
+                controller: _emailController,
                 decoration: const InputDecoration(
                     icon: Icon(Icons.email_sharp),
                     labelText: "Email Address",
@@ -103,6 +176,7 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
               ),
               const Gap(10),
               TextFormField(
+                controller: _telephoneController,
                 decoration: const InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: "Telephone Number",
@@ -115,18 +189,7 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
               ),
               const Gap(10),
               TextFormField(
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.business_sharp),
-                    labelText: "Organization",
-                    hintText: "Employee's Organization",
-                    contentPadding: EdgeInsets.only(left: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0)),
-                        borderSide:
-                            BorderSide(color: Colors.deepOrangeAccent))),
-              ),
-              const Gap(10),
-              TextFormField(
+                controller: _jobRoleController,
                 decoration: const InputDecoration(
                     icon: Icon(FontAwesomeIcons.userTie),
                     labelText: "Job Role",
@@ -143,7 +206,9 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
           SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  _createEmployee();
+                },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 146, 146, 0),
                     padding: const EdgeInsets.all(15),
