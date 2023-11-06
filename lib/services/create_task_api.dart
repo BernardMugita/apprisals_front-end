@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class CreateTaskAPI {
@@ -12,7 +13,8 @@ class CreateTaskAPI {
       String taskType,
       String rating,
       String feedback,
-      String dueDate) async {
+      String dueDate,
+      BuildContext context) async {
     if (title != "" &&
         description != "" &&
         status != "" &&
@@ -28,16 +30,17 @@ class CreateTaskAPI {
         'status': status,
         'assigned_to_id': assignedToId,
         'assigned_by_id': assignedById,
-        'taskType': taskType,
+        'task_type': taskType,
         'rating': rating,
         'feedback': feedback,
-        'dueDate': dueDate,
+        'due_date': dueDate,
       };
 
       final request = await http.post(
         url,
         headers: <String, String>{
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         },
         body: json.encode(bodyData), // Convert body data to JSON format
       );
@@ -45,9 +48,16 @@ class CreateTaskAPI {
       if (json.decode(request.body) != "Invalid Token") {
         if (request.statusCode == 200) {
           // Request was successful, parse the response
-          final responseData = json.decode(request.body);
-          print(responseData);
-          return responseData as Map<String, dynamic>;
+          final taskData = json.decode(request.body);
+          print(taskData);
+          // Add a delay of 3 seconds before navigating to the next screen
+          await Future.delayed(const Duration(seconds: 3));
+          Navigator.pushNamed(
+            context,
+            '/singletask',
+            arguments: taskData,
+          );
+          return taskData;
         } else {
           // Request failed, handle the error
           print('Request failed with status: ${request.statusCode}');

@@ -1,18 +1,39 @@
+import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/services/task_actions_api.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:employee_insights/screens/Tasks/single_task_view.dart';
 
 class TaskComponent extends StatefulWidget {
-  const TaskComponent({super.key});
+  final Map<String, dynamic> tasks;
+  const TaskComponent({Key? key, required this.tasks}) : super(key: key);
 
   @override
   State<TaskComponent> createState() => _TaskComponentState();
 }
 
 class _TaskComponentState extends State<TaskComponent> {
+  TaskActionsAPI actions = TaskActionsAPI();
+  StorageAccess storage = StorageAccess();
+
+  Future<String> deleteTask() async {
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final taskDetails = widget.tasks;
+    final Map<String, dynamic> assignedUser = taskDetails['assigned_to'];
+
     return GestureDetector(
-        onTap: () => {Navigator.pushNamed(context, '/singletask')},
+        onTap: () => {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SingleTaskView(
+                            taskDetails: taskDetails,
+                          )))
+            },
         child: Container(
             margin:
                 const EdgeInsets.only(bottom: 1, left: 10, right: 10, top: 1),
@@ -42,78 +63,104 @@ class _TaskComponentState extends State<TaskComponent> {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  height: 100,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(5)),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Create UI Components",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepOrangeAccent)),
+                      Row(children: [
+                        SizedBox(
+                          width: 250,
+                          child: Text(taskDetails['title'],
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.deepOrangeAccent)),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            deleteTask();
+                          },
+                          child: const Icon(
+                            Icons.delete_forever,
+                            color: Colors.red,
+                          ),
+                        )
+                      ]),
                       Row(
                         children: [
                           Icon(
                             Icons.person,
-                            color: Colors.grey,
+                            color: Colors.deepOrange[200],
                             size: 20,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
-                          Text(
+                          const Text(
                             "Assigned to",
                             style: TextStyle(color: Colors.grey, fontSize: 14),
                           ),
-                          Spacer(),
-                          Text("Employee name",
-                              style:
-                                  TextStyle(color: Colors.blue, fontSize: 14))
+                          const Spacer(),
+                          Text(
+                              "${assignedUser['first_name']} ${assignedUser['last_name']}",
+                              style: const TextStyle(
+                                  color: Colors.blue, fontSize: 14))
                         ],
                       ),
                       Row(
                         children: [
                           Icon(
                             Icons.calendar_today,
-                            color: Colors.grey,
+                            color: Colors.deepOrange[200],
                             size: 20,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
-                          Text(
+                          const Text(
                             "Due date",
                             style: TextStyle(color: Colors.grey, fontSize: 14),
                           ),
-                          Spacer(),
-                          Text("dd/mm/yyyy",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 14))
+                          const Spacer(),
+                          Text(taskDetails['due_date'],
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 14))
                         ],
                       ),
                       Row(
                         children: [
                           Icon(
                             Icons.hourglass_bottom_rounded,
-                            color: Colors.grey,
+                            color: Colors.deepOrange[200],
                             size: 20,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
-                          Text(
+                          const Text(
                             "Status",
                             style: TextStyle(color: Colors.grey, fontSize: 14),
                           ),
-                          Spacer(),
-                          Text("In progress",
-                              style:
-                                  TextStyle(color: Colors.green, fontSize: 14))
+                          const Spacer(),
+                          Text(
+                              taskDetails['status']
+                                  .toString()
+                                  .replaceAll('_', ' '),
+                              style: TextStyle(
+                                  color: taskDetails['status'] == 'Disputed'
+                                      ? Colors.red
+                                      : taskDetails['status'] == 'Done'
+                                          ? Colors.green
+                                          : taskDetails['status'] ==
+                                                  'in_progress'
+                                              ? Colors.orange
+                                              : null))
                         ],
                       )
                     ],

@@ -50,7 +50,7 @@ Future<void> main() async {
       '/dashboard': (context) => const Dashboard(),
       '/tasks': (context) => const TasksList(),
       '/singletask': (context) => const SingleTaskView(
-            createdTask: {},
+            taskDetails: {},
           ),
       '/createtask': (context) => const CreateNewTask(),
       '/employees': (context) => const EmployeesList(),

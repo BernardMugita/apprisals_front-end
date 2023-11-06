@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:employee_insights/services/get_tasks_api.dart';
+import 'package:employee_insights/services/storage.dart';
 import 'package:employee_insights/widgets/App_widgets/top_decoration.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/task_component.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/tasks_banner.dart';
@@ -11,6 +15,33 @@ class TasksList extends StatefulWidget {
 }
 
 class _TasksListState extends State<TasksList> {
+  StorageAccess storage = StorageAccess();
+  GetTasksAPI getTasksAPI = GetTasksAPI();
+  List<Map<String, dynamic>> taskData = [];
+
+  Future<List<Map<String, dynamic>>> getTasks() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
+    final String token = dataMap['token'];
+
+    final tasks = await getTasksAPI.getTasks(token);
+
+    setState(() {
+      taskData = tasks;
+    });
+
+    return tasks;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getTasks();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,15 +130,13 @@ class _TasksListState extends State<TasksList> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const SingleChildScrollView(
+                SingleChildScrollView(
                   child: Column(
                     children: [
-                      TaskComponent(),
-                      TaskComponent(),
-                      TaskComponent(),
-                      TaskComponent(),
-                      TaskComponent(),
-                      TaskComponent(),
+                      for (var tasks in taskData)
+                        TaskComponent(
+                          tasks: tasks,
+                        )
                     ],
                   ),
                 ),

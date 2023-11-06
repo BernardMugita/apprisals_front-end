@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TaskDetails extends StatefulWidget {
-  const TaskDetails({super.key});
+  final Map<String, dynamic> taskDetails;
+  const TaskDetails({Key? key, required this.taskDetails}) : super(key: key);
 
   @override
   State<TaskDetails> createState() => _TaskDetailsState();
@@ -10,6 +11,7 @@ class TaskDetails extends StatefulWidget {
 class _TaskDetailsState extends State<TaskDetails> {
   @override
   Widget build(BuildContext context) {
+    final task = widget.taskDetails;
     return Container(
       decoration: BoxDecoration(
           color: Colors.transparent, borderRadius: BorderRadius.circular(10)),
@@ -40,7 +42,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                 width: 5,
               ),
               Text(
-                "Employee name",
+                "${task['assigned_to']['first_name']} ${task['assigned_to']['last_name']}",
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               )
             ],
@@ -70,7 +72,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                 width: 5,
               ),
               Text(
-                "dd/mm/yyyy",
+                task['due_date'].toString(),
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               )
             ],
@@ -130,7 +132,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                 width: 5,
               ),
               Text(
-                "assigned",
+                task['status'].toString().replaceAll('_', ' '),
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
             ],
@@ -160,7 +162,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                 width: 5,
               ),
               Text(
-                "Group task",
+                task['task_type'].toString(),
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               )
             ],

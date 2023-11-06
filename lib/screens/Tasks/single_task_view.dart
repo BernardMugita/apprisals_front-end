@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:employee_insights/screens/Tasks/edit_task.dart';
+import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/services/task_actions_api.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/attachment_component.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/feedback_component.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/task_details.dart';
@@ -6,17 +11,43 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class SingleTaskView extends StatefulWidget {
-  final Map<String, dynamic> createdTask;
-  const SingleTaskView({Key? key, required this.createdTask}) : super(key: key);
+  final Map<String, dynamic> taskDetails;
+  const SingleTaskView({Key? key, required this.taskDetails}) : super(key: key);
 
   @override
   State<SingleTaskView> createState() => _SingleTaskViewState();
 }
 
 class _SingleTaskViewState extends State<SingleTaskView> {
+  StorageAccess storage = StorageAccess();
+  TaskActionsAPI actions = TaskActionsAPI();
+  String taskId = '';
+
+  Future<String> markAsDone() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
+    final String token = dataMap['token'];
+
+    await actions.markTaskAsDone(token, taskId);
+    return '';
+  }
+
+  Future<String> markAsDisputed() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
+    final String token = dataMap['token'];
+
+    await actions.markTaskasDisputed(token, taskId);
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(widget.createdTask);
+    final task = widget.taskDetails;
+    taskId = task['id'];
+
     return Scaffold(
         backgroundColor: const Color(0xFFFEF1ED),
         body: SingleChildScrollView(
@@ -48,19 +79,42 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                       const Icon(Icons.reorder, color: Colors.white, size: 16),
                     ],
                   ),
+                  const Gap(20),
+                  const Divider(color: Colors.white),
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
-                  const Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditTask(taskId: taskId)));
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.deepOrangeAccent,
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      const Gap(20),
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             "TaskID:",
                             style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.deepOrangeAccent,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -69,18 +123,19 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           ),
                           Text("00JHGQO",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               )),
                         ],
                       ),
-                      Row(
+                      const Gap(5),
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Date Assigned:",
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.deepOrangeAccent,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold)),
                           SizedBox(
@@ -88,45 +143,48 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           ),
                           Text("dd/mm/yyyy",
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold)),
                         ],
                       )
                     ],
                   ),
-                  const Row(
+                  const Gap(5),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Title:",
+                      const Text("Title:",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.deepOrangeAccent,
                               fontSize: 16,
                               fontWeight: FontWeight.bold)),
                       SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "CREATE UI COMPONENTS",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                        width: 200,
+                        child: Text(
+                          task['title'],
+                          textAlign: TextAlign.right,
+                          style: const TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
                 ])),
-            const TaskDetails(),
+            TaskDetails(taskDetails: task),
             Container(
               width: double.infinity,
               margin: const EdgeInsets.all(10),
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -142,15 +200,16 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           size: 20,
                         )
                       ]),
-                  Divider(
+                  const Divider(
                     color: Colors.grey,
                   ),
-                  Gap(10),
+                  const Gap(10),
                   SizedBox(
                     width: double.infinity,
-                    child: Text(
-                        "The process typically begins with planning and sketching the layout and appearance of the components, taking into consideration factors like user experience, aesthetics, and usability."),
-                  )
+                    child: Text(task['description'],
+                        // increase line height
+                        style: const TextStyle(height: 1.5)),
+                  ),
                 ],
               ),
             ),
@@ -239,7 +298,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.red),
-                          onPressed: () {},
+                          onPressed: () {
+                            markAsDisputed();
+                          },
                           child: const Text(
                             "Dispute",
                             style: TextStyle(fontSize: 14),
@@ -252,7 +313,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF008000),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            markAsDone();
+                          },
                           child: const Text(
                             "Mark as done",
                             style: TextStyle(fontSize: 14),

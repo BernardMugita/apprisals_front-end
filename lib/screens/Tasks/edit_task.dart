@@ -1,21 +1,24 @@
 import 'dart:convert';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:employee_insights/services/create_task_api.dart';
+import 'package:employee_insights/services/edit_task_api.dart';
 import 'package:employee_insights/services/get_employees_api.dart';
+import 'package:employee_insights/services/get_tasks_api.dart';
 import 'package:employee_insights/services/storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:dotted_border/dotted_border.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
-class CreateNewTask extends StatefulWidget {
-  const CreateNewTask({super.key});
+class EditTask extends StatefulWidget {
+  final String taskId;
+  const EditTask({Key? key, required this.taskId}) : super(key: key);
 
   @override
-  State<CreateNewTask> createState() => _CreateNewTaskState();
+  State<EditTask> createState() => _EditTaskState();
 }
 
-class _CreateNewTaskState extends State<CreateNewTask> {
+class _EditTaskState extends State<EditTask> {
   int? selectedValue;
   Map<String, dynamic>? selectedEmployee;
 
@@ -25,12 +28,17 @@ class _CreateNewTaskState extends State<CreateNewTask> {
   StorageAccess storage = StorageAccess();
   GetEmployeesAPI getEmployeesRequest = GetEmployeesAPI();
   CreateTaskAPI createTaskAPI = CreateTaskAPI();
+  EditTaskAPI editTaskAPI = EditTaskAPI();
   List<Map<String, dynamic>> employeeData = [];
+  GetTasksAPI tasks = GetTasksAPI();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _taskTypeController = TextEditingController();
+
+  Map<String, dynamic> taskDetails = {};
+  String taskId = '';
 
   // Date picker
   Future<void> _selectDate(BuildContext context) async {
@@ -47,6 +55,28 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     }
   }
 
+  // Fetch Task Details
+  Future<Map<String, dynamic>> getTaskById() async {
+    final userToken = await storage.readSecureData('token');
+    final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
+    final String token = dataMap['token'];
+
+    final task = await tasks.getTask(token, taskId);
+
+    setState(() {
+      taskDetails = task;
+      _titleController.text = task['title'];
+      _descriptionController.text = task['description'];
+      _statusController.text = task['status'];
+      _taskTypeController.text = task['task_type'];
+      selectedEmployee = task['assigned_to'];
+      selectedDate = DateTime.parse(task['due_date']);
+    });
+
+    return {};
+  }
+
   // get all employees
   Future<void> getEmployees() async {
     final userToken = await storage.readSecureData('token');
@@ -60,39 +90,42 @@ class _CreateNewTaskState extends State<CreateNewTask> {
     }
   }
 
-  // create task
-  Future<Map<String, dynamic>> createTask() async {
+  // edit Task
+  Future<String> editTask() async {
     final userToken = await storage.readSecureData('token');
     final Map<String, dynamic> dataMap = jsonDecode(userToken!);
+
     final String token = dataMap['token'];
-    final decodedToken = JwtDecoder.decode(token);
-    final createdById = decodedToken['id'];
-    await createTaskAPI.createTask(
+
+    await editTaskAPI.editTask(
         token,
         _titleController.text,
         _descriptionController.text,
         _statusController.text,
-        selectedEmployee!['id'],
-        createdById,
+        selectedEmployee!['id'].toString(),
+        dataMap['id'].toString(),
         _taskTypeController.text,
-        "0",
-        "Awaiting feedback",
+        'Awaiting Feedback',
+        '0',
         selectedDate.toString().split(' ')[0],
         context);
 
-    return {};
+    return '';
   }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      getTaskById();
       getEmployees();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    taskId = widget.taskId;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFEF1ED),
       appBar: AppBar(
@@ -114,10 +147,10 @@ class _CreateNewTaskState extends State<CreateNewTask> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Text(
-              "Create task",
+              "Edit task",
               textAlign: TextAlign.left,
               style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.deepOrange,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
@@ -223,6 +256,13 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                               style: TextStyle(fontSize: 12),
                             ),
                           ),
+                          DropdownMenuItem(
+                            value: "Done",
+                            child: Text(
+                              "Done",
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ),
                         ],
                         onChanged: (value) {
                           setState(() {
@@ -240,9 +280,12 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                         style: TextStyle(fontSize: 14, color: Colors.black),
                       ),
                       DropdownButton(
-                        hint: const Text(
-                          '- - - select employee - - -',
-                          style: TextStyle(fontSize: 12, color: Colors.black),
+                        hint: Text(
+                          selectedEmployee != null
+                              ? '${selectedEmployee!['first_name']} ${selectedEmployee!['last_name']}'
+                              : '- - - select - - -',
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black),
                         ),
                         value: selectedEmployee, // Change the type here
                         items: employeeData.map((employee) {
@@ -341,9 +384,9 @@ class _CreateNewTaskState extends State<CreateNewTask> {
                             backgroundColor: Colors.deepOrange,
                             padding: const EdgeInsets.all(10)),
                         onPressed: () {
-                          createTask();
+                          editTask();
                         },
-                        child: const Text('Create Task',
+                        child: const Text('Save Changes',
                             style: TextStyle(fontSize: 12))))
               ],
             )

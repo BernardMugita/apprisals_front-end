@@ -146,7 +146,7 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
                     borderSide: BorderSide(color: Colors.deepOrangeAccent),
                   ),
                 ),
-                items: <String>['--Select Role--', 'Admin', 'User']
+                items: <String>['--Select Role--', 'admin', 'user']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value, // The value associated with this item
