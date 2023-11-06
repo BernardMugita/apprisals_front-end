@@ -46,7 +46,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   @override
   Widget build(BuildContext context) {
     final task = widget.taskDetails;
-    taskId = task['id'];
+    if(task.isNotEmpty){
+      taskId = task['id'];
+    }
 
     return Scaffold(
         backgroundColor: const Color(0xFFFEF1ED),
@@ -162,7 +164,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                       SizedBox(
                         width: 200,
                         child: Text(
-                          task['title'],
+                          task.isNotEmpty ? task['title'] : 'loading...',
                           textAlign: TextAlign.right,
                           style: const TextStyle(
                               overflow: TextOverflow.ellipsis,
@@ -206,7 +208,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                   const Gap(10),
                   SizedBox(
                     width: double.infinity,
-                    child: Text(task['description'],
+                    child: Text(task.isNotEmpty ? task['description'] : 'loading...',
                         // increase line height
                         style: const TextStyle(height: 1.5)),
                   ),

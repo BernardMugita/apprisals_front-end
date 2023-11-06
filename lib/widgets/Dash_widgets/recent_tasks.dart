@@ -67,28 +67,26 @@ class _RecentTasksState extends State<RecentTasks> {
                 ),
               ),
               const Gap(10),
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Progress",
                     style: TextStyle(color: Colors.white),
                   ),
-                  const Gap(10),
+                  Gap(10),
                   Row(
                     children: [
-                      Container(
-                        height: 3,
-                        width: 120,
-                        color: Colors.black,
-                      ),
-                      Container(
-                        height: 3,
-                        width: 120,
-                        color: Colors.grey[300],
-                      ),
-                      const Gap(10),
-                      const Text(
+                      Expanded(
+                          child: SizedBox(
+                        child: LinearProgressIndicator(
+                          value: 0.5,
+                          backgroundColor: Colors.white,
+                          color: Colors.deepOrangeAccent,
+                        ),
+                      )),
+                      Gap(10),
+                      Text(
                         "50%",
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold),

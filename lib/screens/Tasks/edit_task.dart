@@ -105,8 +105,8 @@ class _EditTaskState extends State<EditTask> {
         selectedEmployee!['id'].toString(),
         dataMap['id'].toString(),
         _taskTypeController.text,
-        'Awaiting Feedback',
         '0',
+        'Awaiting Feedback',
         selectedDate.toString().split(' ')[0],
         context);
 
@@ -250,9 +250,9 @@ class _EditTaskState extends State<EditTask> {
                             ),
                           ),
                           DropdownMenuItem(
-                            value: "pending",
+                            value: "Disputed",
                             child: Text(
-                              "Pending",
+                              "Disputed",
                               style: TextStyle(fontSize: 12),
                             ),
                           ),
@@ -287,11 +287,11 @@ class _EditTaskState extends State<EditTask> {
                           style: const TextStyle(
                               fontSize: 12, color: Colors.black),
                         ),
-                        value: selectedEmployee, // Change the type here
                         items: employeeData.map((employee) {
+                          print(employee);
                           return DropdownMenuItem(
-                            value:
-                                employee, // Change this to the whole employee map
+                            value: employee[
+                                'id'], // Use the whole employee map as the value
                             child: Text(
                               '${employee['first_name']} ${employee['last_name']}',
                               style: const TextStyle(
@@ -301,8 +301,7 @@ class _EditTaskState extends State<EditTask> {
                         }).toList(),
                         onChanged: (value) {
                           setState(() {
-                            selectedEmployee =
-                                value; // Change this to the whole employee map
+                            selectedEmployee = value as Map<String, dynamic>;
                           });
                         },
                       )

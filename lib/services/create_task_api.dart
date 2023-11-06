@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:employee_insights/screens/Tasks/single_task_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -48,16 +49,18 @@ class CreateTaskAPI {
       if (json.decode(request.body) != "Invalid Token") {
         if (request.statusCode == 200) {
           // Request was successful, parse the response
-          final taskData = json.decode(request.body);
-          print(taskData);
+          final taskDetails = request.body;
           // Add a delay of 3 seconds before navigating to the next screen
           await Future.delayed(const Duration(seconds: 3));
-          Navigator.pushNamed(
+          Navigator.push(
             context,
-            '/singletask',
-            arguments: taskData,
+            MaterialPageRoute(
+              builder: (context) => SingleTaskView(
+                taskDetails: taskDetails as Map<String, dynamic>,
+              ),
+            ),
           );
-          return taskData;
+          return taskDetails as Map<String, dynamic>;
         } else {
           // Request failed, handle the error
           print('Request failed with status: ${request.statusCode}');

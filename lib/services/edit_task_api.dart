@@ -39,19 +39,19 @@ class EditTaskAPI {
     if (json.decode(request.body) != "Invalid Token") {
       if (request.statusCode == 200) {
         // Request was successful, parse the response
-        final taskData = json.decode(request.body);
-        print(taskData);
+        final taskDetails = request.body;
+        print(taskDetails);
         // Add a delay of 3 seconds before navigating to the next screen
         await Future.delayed(const Duration(seconds: 3));
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => SingleTaskView(
-              taskDetails: taskData,
+              taskDetails: taskDetails as Map<String, dynamic>
             ),
           ),
         );
-        return taskData;
+        return taskDetails;
       } else {
         // Request failed, handle the error
         print('Request failed with status: ${request.statusCode}');

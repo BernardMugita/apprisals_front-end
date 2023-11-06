@@ -40,6 +40,8 @@ Future<void> main() async {
     isExpired = JwtDecoder.isExpired(token);
   }
 
+  Map<String, dynamic> taskDetails = {};
+
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: isExpired ? '/login' : '/',
@@ -49,8 +51,8 @@ Future<void> main() async {
       '/register': (context) => const Register(),
       '/dashboard': (context) => const Dashboard(),
       '/tasks': (context) => const TasksList(),
-      '/singletask': (context) => const SingleTaskView(
-            taskDetails: {},
+      '/singletask': (context) => SingleTaskView(
+            taskDetails: taskDetails,
           ),
       '/createtask': (context) => const CreateNewTask(),
       '/employees': (context) => const EmployeesList(),

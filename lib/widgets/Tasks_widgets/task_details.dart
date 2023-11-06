@@ -42,7 +42,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                 width: 5,
               ),
               Text(
-                "${task['assigned_to']['first_name']} ${task['assigned_to']['last_name']}",
+                task.isNotEmpty ? "${task['assigned_to']['first_name']} ${task['assigned_to']['last_name']}" : "loading...",
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               )
             ],
@@ -72,7 +72,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                 width: 5,
               ),
               Text(
-                task['due_date'].toString(),
+                task.isNotEmpty ? task['due_date'].toString() : "loading...",
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               )
             ],
@@ -132,7 +132,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                 width: 5,
               ),
               Text(
-                task['status'].toString().replaceAll('_', ' '),
+                task.isNotEmpty ? task['status'].toString() : "- - - select - - -", 
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
             ],
