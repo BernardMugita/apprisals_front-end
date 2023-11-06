@@ -135,9 +135,9 @@ class _LoginState extends State<Login> {
                     child: TextFormField(
                       decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
-                          hintText: "Enter your username",
-                          labelText: "Username",
-                          icon: const Icon(Icons.person),
+                          hintText: "Enter your email",
+                          labelText: "Email",
+                          icon: const Icon(Icons.email_outlined),
                           iconColor: Colors.deepOrange[200],
                           hintStyle: const TextStyle(
                             color: Colors.grey,
