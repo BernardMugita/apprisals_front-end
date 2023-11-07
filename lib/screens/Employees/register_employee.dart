@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:employee_insights/services/create_employee_account_api.dart';
 import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/widgets/Alert_widgets/error_message.dart';
+import 'package:employee_insights/widgets/Alert_widgets/success_message.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
@@ -23,8 +25,11 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
   final TextEditingController _telephoneController = TextEditingController();
   final TextEditingController _jobRoleController = TextEditingController();
   StorageAccess storage = StorageAccess();
-  CreateEmployeeAccountApi createEmployeeAccountApi =
-      CreateEmployeeAccountApi();
+  CreateEmployeeAccountApi account = CreateEmployeeAccountApi();
+
+  bool success = false;
+  bool error = false;
+  String alertMessage = "";
 
   Future<void> _createEmployee() async {
     final userToken = await storage.readSecureData('token');
@@ -36,7 +41,8 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
 
     final organizationName = decodedToken['organization'];
 
-    await createEmployeeAccountApi.createEmployee(
+    try {
+      await account.createEmployee(
         token,
         _usernameController.text,
         _firstNameController.text,
@@ -46,7 +52,35 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
         organizationName,
         _telephoneController.text,
         _jobRoleController.text,
-        context);
+        context,
+      );
+
+      // If the request completes without exceptions, you can assume success.
+      setState(() {
+        success = true;
+        alertMessage = 'Account created successfully';
+      });
+
+      Future.delayed(const Duration(seconds: 3), () {
+        setState(() {
+          success = false;
+          alertMessage = "";
+          Navigator.pop(context);
+        });
+      });
+    } catch (e) {
+      setState(() {
+        error = true;
+        alertMessage = "Failed to create employee: $e";
+      });
+
+      Future.delayed(const Duration(seconds: 3), () {
+        setState(() {
+          error = false;
+          alertMessage = "";
+        });
+      });
+    }
   }
 
   @override
@@ -65,162 +99,179 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
                 color: Colors.black,
                 size: 16,
               ))),
-      body: SingleChildScrollView(
-        padding:
-            const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          const Text(
-            "Create Employee Account",
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 146, 146, 0)),
-          ),
-          const Gap(20),
-          const SizedBox(
-            width: double.infinity,
-            child: CircleAvatar(
-              radius: 80,
-              backgroundColor: Color.fromARGB(255, 146, 146, 0),
-              child: Icon(
-                Icons.person_add_alt_1_rounded,
-                size: 65,
-                color: Colors.yellowAccent,
+      body: Stack(children: [
+        SingleChildScrollView(
+          padding:
+              const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            const Text(
+              "Create Employee Account",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 146, 146, 0)),
+            ),
+            const Gap(20),
+            const SizedBox(
+              width: double.infinity,
+              child: CircleAvatar(
+                radius: 80,
+                backgroundColor: Color.fromARGB(255, 146, 146, 0),
+                child: Icon(
+                  Icons.person_add_alt_1_rounded,
+                  size: 65,
+                  color: Colors.yellowAccent,
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: Column(children: [
-              const Gap(20),
-              TextFormField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                    icon: Icon(FontAwesomeIcons.solidUser),
-                    labelText: "Username",
-                    hintText: "Employee's username",
-                    contentPadding: EdgeInsets.only(left: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0)),
-                        borderSide:
-                            BorderSide(color: Colors.deepOrangeAccent))),
-              ),
-              const Gap(10),
-              TextFormField(
-                controller: _firstNameController,
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.label_important),
-                    labelText: "First Name",
-                    hintText: "Employee's first name",
-                    contentPadding: EdgeInsets.only(left: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0)),
-                        borderSide:
-                            BorderSide(color: Colors.deepOrangeAccent))),
-              ),
-              const Gap(10),
-              TextFormField(
-                controller: _lastnameController,
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.label_important),
-                    labelText: "Last Name",
-                    hintText: "Employee's last name",
-                    contentPadding: EdgeInsets.only(left: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0)),
-                        borderSide:
-                            BorderSide(color: Colors.deepOrangeAccent))),
-              ),
-              const Gap(10),
-              // drops down a list of roles
-              DropdownButtonFormField<String>(
-                value: _roleController.text.isNotEmpty
-                    ? _roleController.text
-                    : '--Select Role--',
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.admin_panel_settings_rounded),
-                  labelText: 'Role',
-                  contentPadding: EdgeInsets.only(left: 10),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(0)),
-                    borderSide: BorderSide(color: Colors.deepOrangeAccent),
-                  ),
-                ),
-                items: <String>['--Select Role--', 'admin', 'user']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value, // The value associated with this item
-                    child: Text(value), // The text displayed for this item
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    // Update the selected value when the user makes a selection
-                    _roleController.text =
-                        newValue ?? ''; // Use null-aware operator
-                  });
-                },
-              ),
-              const Gap(10),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.email_sharp),
-                    labelText: "Email Address",
-                    hintText: "Employee's email address",
-                    contentPadding: EdgeInsets.only(left: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0)),
-                        borderSide:
-                            BorderSide(color: Colors.deepOrangeAccent))),
-              ),
-              const Gap(10),
-              TextFormField(
-                controller: _telephoneController,
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.phone),
-                    labelText: "Telephone Number",
-                    hintText: "Employees Telephone Number",
-                    contentPadding: EdgeInsets.only(left: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0)),
-                        borderSide:
-                            BorderSide(color: Colors.deepOrangeAccent))),
-              ),
-              const Gap(10),
-              TextFormField(
-                controller: _jobRoleController,
-                decoration: const InputDecoration(
-                    icon: Icon(FontAwesomeIcons.userTie),
-                    labelText: "Job Role",
-                    hintText: "Employees Job Role",
-                    contentPadding: EdgeInsets.only(left: 10),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(0)),
-                        borderSide:
-                            BorderSide(color: Colors.deepOrangeAccent))),
-              )
-            ]),
-          ),
-          const Gap(40),
-          SizedBox(
+            SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  _createEmployee();
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 146, 146, 0),
-                    padding: const EdgeInsets.all(15),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0))),
-                child: const Text(
-                  "Create Account",
-                  style: TextStyle(fontSize: 16, color: Colors.yellowAccent),
+              child: Column(children: [
+                const Gap(20),
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                      icon: Icon(FontAwesomeIcons.solidUser),
+                      labelText: "Username",
+                      hintText: "Employee's username",
+                      contentPadding: EdgeInsets.only(left: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(0)),
+                          borderSide:
+                              BorderSide(color: Colors.deepOrangeAccent))),
                 ),
-              ))
-        ]),
-      ),
+                const Gap(10),
+                TextFormField(
+                  controller: _firstNameController,
+                  decoration: const InputDecoration(
+                      icon: Icon(Icons.label_important),
+                      labelText: "First Name",
+                      hintText: "Employee's first name",
+                      contentPadding: EdgeInsets.only(left: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(0)),
+                          borderSide:
+                              BorderSide(color: Colors.deepOrangeAccent))),
+                ),
+                const Gap(10),
+                TextFormField(
+                  controller: _lastnameController,
+                  decoration: const InputDecoration(
+                      icon: Icon(Icons.label_important),
+                      labelText: "Last Name",
+                      hintText: "Employee's last name",
+                      contentPadding: EdgeInsets.only(left: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(0)),
+                          borderSide:
+                              BorderSide(color: Colors.deepOrangeAccent))),
+                ),
+                const Gap(10),
+                // drops down a list of roles
+                DropdownButtonFormField<String>(
+                  value: _roleController.text.isNotEmpty
+                      ? _roleController.text
+                      : '--Select Role--',
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.admin_panel_settings_rounded),
+                    labelText: 'Role',
+                    contentPadding: EdgeInsets.only(left: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(0)),
+                      borderSide: BorderSide(color: Colors.deepOrangeAccent),
+                    ),
+                  ),
+                  items: <String>['--Select Role--', 'admin', 'user']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value, // The value associated with this item
+                      child: Text(value), // The text displayed for this item
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      // Update the selected value when the user makes a selection
+                      _roleController.text =
+                          newValue ?? ''; // Use null-aware operator
+                    });
+                  },
+                ),
+                const Gap(10),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                      icon: Icon(Icons.email_sharp),
+                      labelText: "Email Address",
+                      hintText: "Employee's email address",
+                      contentPadding: EdgeInsets.only(left: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(0)),
+                          borderSide:
+                              BorderSide(color: Colors.deepOrangeAccent))),
+                ),
+                const Gap(10),
+                TextFormField(
+                  controller: _telephoneController,
+                  decoration: const InputDecoration(
+                      icon: Icon(Icons.phone),
+                      labelText: "Telephone Number",
+                      hintText: "Employees Telephone Number",
+                      contentPadding: EdgeInsets.only(left: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(0)),
+                          borderSide:
+                              BorderSide(color: Colors.deepOrangeAccent))),
+                ),
+                const Gap(10),
+                TextFormField(
+                  controller: _jobRoleController,
+                  decoration: const InputDecoration(
+                      icon: Icon(FontAwesomeIcons.userTie),
+                      labelText: "Job Role",
+                      hintText: "Employees Job Role",
+                      contentPadding: EdgeInsets.only(left: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(0)),
+                          borderSide:
+                              BorderSide(color: Colors.deepOrangeAccent))),
+                )
+              ]),
+            ),
+            const Gap(40),
+            SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _createEmployee();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 146, 146, 0),
+                      padding: const EdgeInsets.all(15),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0))),
+                  child: const Text(
+                    "Create Account",
+                    style: TextStyle(fontSize: 16, color: Colors.yellowAccent),
+                  ),
+                ))
+          ]),
+        ),
+        if (error)
+          Positioned(
+            top: 20, // Adjust the top value as needed
+            left: 0,
+            right: 0,
+            child: ErrorMessage(message: alertMessage),
+          ),
+        if (success)
+          Positioned(
+            top: 20, // Adjust the top value as needed
+            left: 0,
+            right: 0,
+            child: SuccessMessage(message: alertMessage),
+          )
+      ]),
     );
   }
 }

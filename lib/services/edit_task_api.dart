@@ -36,30 +36,27 @@ class EditTaskAPI {
           'due_date': dueDate,
         }));
 
-    if (json.decode(request.body) != "Invalid Token") {
+    if (request.body != "Invalid Token" && request.body != "object has no") {
       if (request.statusCode == 200) {
         // Request was successful, parse the response
         final taskDetails = request.body;
-        print(taskDetails);
         // Add a delay of 3 seconds before navigating to the next screen
-        await Future.delayed(const Duration(seconds: 3));
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SingleTaskView(
-              taskDetails: taskDetails as Map<String, dynamic>
+        await Future.delayed(const Duration(seconds: 3), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SingleTaskView(
+                  taskDetails: taskDetails as Map<String, dynamic>),
             ),
-          ),
-        );
+          );
+        });
         return taskDetails;
       } else {
         // Request failed, handle the error
-        print('Request failed with status: ${request.statusCode}');
+        throw Exception('Failed to edit task');
       }
     } else {
-      print("Invalid Token");
+      throw Exception('Invalid Token');
     }
-
-    return '';
   }
 }

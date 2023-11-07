@@ -45,11 +45,14 @@ class CreateTaskAPI {
         },
         body: json.encode(bodyData), // Convert body data to JSON format
       );
-
-      if (json.decode(request.body) != "Invalid Token") {
-        if (request.statusCode == 200) {
-          // Request was successful, parse the response
-          final taskDetails = request.body;
+      if (request.statusCode == 200) {
+        // Request was successful, parse the response
+        final taskDetails = json.decode(request.body);
+        if (taskDetails == "Error" || taskDetails == "Invalid" ||
+            taskDetails == "Unauthorized" ||
+            taskDetails == "object has no attribute") {
+          return {};
+        } else {
           // Add a delay of 3 seconds before navigating to the next screen
           await Future.delayed(const Duration(seconds: 3));
           Navigator.push(
@@ -61,17 +64,13 @@ class CreateTaskAPI {
             ),
           );
           return taskDetails as Map<String, dynamic>;
-        } else {
-          // Request failed, handle the error
-          print('Request failed with status: ${request.statusCode}');
         }
       } else {
-        print("Invalid Token");
+        // Request was unsuccessful, throw an error
+        throw Exception('Failed to load data');
       }
     } else {
-      print('please enter all fields');
+      throw Exception('Please fill in all the fields');
     }
-
-    return {};
   }
 }

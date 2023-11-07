@@ -6,7 +6,8 @@ import 'package:employee_insights/services/edit_task_api.dart';
 import 'package:employee_insights/services/get_employees_api.dart';
 import 'package:employee_insights/services/get_tasks_api.dart';
 import 'package:employee_insights/services/storage.dart';
-import 'package:flutter/foundation.dart';
+import 'package:employee_insights/widgets/Alert_widgets/error_message.dart';
+import 'package:employee_insights/widgets/Alert_widgets/success_message.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -39,6 +40,10 @@ class _EditTaskState extends State<EditTask> {
 
   Map<String, dynamic> taskDetails = {};
   String taskId = '';
+
+  bool success = false;
+  bool error = false;
+  String alertMessage = "";
 
   // Date picker
   Future<void> _selectDate(BuildContext context) async {
@@ -97,7 +102,8 @@ class _EditTaskState extends State<EditTask> {
 
     final String token = dataMap['token'];
 
-    await editTaskAPI.editTask(
+    try {
+      await editTaskAPI.editTask(
         token,
         _titleController.text,
         _descriptionController.text,
@@ -108,7 +114,34 @@ class _EditTaskState extends State<EditTask> {
         '0',
         'Awaiting Feedback',
         selectedDate.toString().split(' ')[0],
-        context);
+        context,
+      );
+
+      // If the request completes without exceptions, you can assume success.
+      setState(() {
+        success = true;
+        alertMessage = 'Task updated successfully';
+      });
+
+      Future.delayed(const Duration(seconds: 3), () {
+        setState(() {
+          success = false;
+          alertMessage = "";
+        });
+      });
+    } catch (e) {
+      setState(() {
+        error = true;
+        alertMessage = "Failed to update task: $e";
+      });
+
+      Future.delayed(const Duration(seconds: 3), () {
+        setState(() {
+          error = false;
+          alertMessage = "";
+        });
+      });
+    }
 
     return '';
   }
@@ -139,258 +172,284 @@ class _EditTaskState extends State<EditTask> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        padding:
-            const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 30),
-        child: Container(
-          color: Colors.transparent,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text(
-              "Edit task",
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  color: Colors.deepOrange,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            const Gap(10),
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(hintText: "Task name"),
-            ),
-            const Gap(10),
-            TextField(
-              controller: _descriptionController,
-              decoration:
-                  const InputDecoration(hintText: 'Enter task description'),
-              maxLines: null,
-            ),
-            const Gap(10),
-            Container(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding:
+                const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 30),
+            child: Container(
               color: Colors.transparent,
-              width: double.infinity, // Set a fixed width to constrain the row
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Task Type:",
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  const Spacer(),
-                  // Wrap the DropdownButton with an Expanded widget to constrain its width
-                  Expanded(
-                    child: DropdownButton<String>(
-                      hint: const Text(
-                        '- - - select - - -',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      value: _taskTypeController.text.isNotEmpty
-                          ? _taskTypeController.text
-                          : 'individual',
-                      items: const [
-                        DropdownMenuItem<String>(
-                          value: "individual",
-                          child: Text(
-                            "Individual task",
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: "group",
-                          child: Text(
-                            "Group task",
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _taskTypeController.text = value!;
-                        });
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-            const Gap(10),
-            const Text(
-              "Task details",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const Gap(10),
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              padding: const EdgeInsets.all(15),
               child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Status:",
-                        style: TextStyle(fontSize: 14, color: Colors.black),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Edit task",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.deepOrange,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const Gap(10),
+                    TextField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(hintText: "Task name"),
+                    ),
+                    const Gap(10),
+                    TextField(
+                      controller: _descriptionController,
+                      decoration: const InputDecoration(
+                          hintText: 'Enter task description'),
+                      maxLines: null,
+                    ),
+                    const Gap(10),
+                    Container(
+                      color: Colors.transparent,
+                      width: double
+                          .infinity, // Set a fixed width to constrain the row
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Task Type:",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          const Spacer(),
+                          // Wrap the DropdownButton with an Expanded widget to constrain its width
+                          Expanded(
+                            child: DropdownButton<String>(
+                              hint: const Text(
+                                '- - - select - - -',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              value: _taskTypeController.text.isNotEmpty
+                                  ? _taskTypeController.text
+                                  : 'individual',
+                              items: const [
+                                DropdownMenuItem<String>(
+                                  value: "individual",
+                                  child: Text(
+                                    "Individual task",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                                DropdownMenuItem<String>(
+                                  value: "group",
+                                  child: Text(
+                                    "Group task",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _taskTypeController.text = value!;
+                                });
+                              },
+                            ),
+                          )
+                        ],
                       ),
-                      DropdownButton(
-                        hint: const Text(
-                          '- - - select - - -',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        value: _statusController.text.isNotEmpty
-                            ? _statusController.text
-                            : 'in_progress',
-                        items: const [
-                          DropdownMenuItem(
-                            value: "in_progress",
-                            child: Text(
-                              "In progress",
-                              style: TextStyle(fontSize: 12),
-                            ),
+                    ),
+                    const Gap(10),
+                    const Text(
+                      "Task details",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const Gap(10),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Status:",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black),
+                              ),
+                              DropdownButton(
+                                hint: const Text(
+                                  '- - - select - - -',
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                                value: _statusController.text.isNotEmpty
+                                    ? _statusController.text
+                                    : 'in_progress',
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: "in_progress",
+                                    child: Text(
+                                      "In progress",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Disputed",
+                                    child: Text(
+                                      "Disputed",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Done",
+                                    child: Text(
+                                      "Done",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _statusController.text = value!;
+                                  });
+                                },
+                              )
+                            ],
                           ),
-                          DropdownMenuItem(
-                            value: "Disputed",
-                            child: Text(
-                              "Disputed",
-                              style: TextStyle(fontSize: 12),
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Assign to:",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black),
+                              ),
+                              DropdownButton(
+                                hint: Text(
+                                  selectedEmployee != null
+                                      ? '${selectedEmployee!['first_name']} ${selectedEmployee!['last_name']}'
+                                      : '- - - select - - -',
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.black),
+                                ),
+                                items: employeeData.map((employee) {
+                                  print(employee);
+                                  return DropdownMenuItem(
+                                    value: employee[
+                                        'id'], // Use the whole employee map as the value
+                                    child: Text(
+                                      '${employee['first_name']} ${employee['last_name']}',
+                                      style: const TextStyle(
+                                          fontSize: 12, color: Colors.black),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedEmployee =
+                                        value as Map<String, dynamic>;
+                                  });
+                                },
+                              )
+                            ],
                           ),
-                          DropdownMenuItem(
-                            value: "Done",
-                            child: Text(
-                              "Done",
-                              style: TextStyle(fontSize: 12),
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Due Date:",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              const Gap(10),
+                              Row(children: [
+                                Expanded(
+                                    child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      elevation: 10,
+                                      backgroundColor: const Color(0xFFFEF1ED),
+                                      padding: const EdgeInsets.all(10)),
+                                  onPressed: () =>
+                                      _selectDate(context), // Open date picker
+                                  child: Row(children: [
+                                    const Icon(
+                                      Icons.calendar_month,
+                                      color: Colors.deepOrange,
+                                    ),
+                                    const Gap(10),
+                                    Text(
+                                      "${selectedDate?.toLocal()}".split(
+                                          ' ')[0], // Display selected date
+                                      style: const TextStyle(
+                                          fontSize: 12, color: Colors.black),
+                                    )
+                                  ]),
+                                ))
+                              ]),
+                            ],
                           ),
                         ],
-                        onChanged: (value) {
-                          setState(() {
-                            _statusController.text = value!;
-                          });
-                        },
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Assign to:",
-                        style: TextStyle(fontSize: 14, color: Colors.black),
                       ),
-                      DropdownButton(
-                        hint: Text(
-                          selectedEmployee != null
-                              ? '${selectedEmployee!['first_name']} ${selectedEmployee!['last_name']}'
-                              : '- - - select - - -',
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.black),
-                        ),
-                        items: employeeData.map((employee) {
-                          print(employee);
-                          return DropdownMenuItem(
-                            value: employee[
-                                'id'], // Use the whole employee map as the value
-                            child: Text(
-                              '${employee['first_name']} ${employee['last_name']}',
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.black),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedEmployee = value as Map<String, dynamic>;
-                          });
-                        },
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Due Date:",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      const Gap(10),
-                      Row(children: [
+                    ),
+                    const Gap(20),
+                    const Text(
+                      "Attachments",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const Gap(10),
+                    DottedBorder(
+                      padding: const EdgeInsets.only(top: 30, bottom: 30),
+                      strokeWidth: 2,
+                      radius: const Radius.circular(15),
+                      color: const Color.fromARGB(255, 162, 162, 162),
+                      child: Center(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.upload_rounded,
+                            color: Colors.deepOrange,
+                          ),
+                          TextButton(
+                              onPressed: () {},
+                              child: const Text(
+                                "Click here to add attachments",
+                                style: TextStyle(color: Colors.black),
+                              ))
+                        ],
+                      )),
+                    ),
+                    const Gap(20),
+                    Row(
+                      children: [
                         Expanded(
                             child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              elevation: 10,
-                              backgroundColor: const Color(0xFFFEF1ED),
-                              padding: const EdgeInsets.all(10)),
-                          onPressed: () =>
-                              _selectDate(context), // Open date picker
-                          child: Row(children: [
-                            const Icon(
-                              Icons.calendar_month,
-                              color: Colors.deepOrange,
-                            ),
-                            const Gap(10),
-                            Text(
-                              "${selectedDate?.toLocal()}"
-                                  .split(' ')[0], // Display selected date
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.black),
-                            )
-                          ]),
-                        ))
-                      ]),
-                    ],
-                  ),
-                ],
-              ),
+                                style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: Colors.deepOrange,
+                                    padding: const EdgeInsets.all(10)),
+                                onPressed: () {
+                                  editTask();
+                                },
+                                child: const Text('Save Changes',
+                                    style: TextStyle(fontSize: 12))))
+                      ],
+                    )
+                  ]),
             ),
-            const Gap(20),
-            const Text(
-              "Attachments",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          if (error)
+            Positioned(
+              top: 20, // Adjust the top value as needed
+              left: 0,
+              right: 0,
+              child: ErrorMessage(message: alertMessage),
             ),
-            const Gap(10),
-            DottedBorder(
-              padding: const EdgeInsets.only(top: 30, bottom: 30),
-              strokeWidth: 2,
-              radius: const Radius.circular(15),
-              color: const Color.fromARGB(255, 162, 162, 162),
-              child: Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.upload_rounded,
-                    color: Colors.deepOrange,
-                  ),
-                  TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "Click here to add attachments",
-                        style: TextStyle(color: Colors.black),
-                      ))
-                ],
-              )),
-            ),
-            const Gap(20),
-            Row(
-              children: [
-                Expanded(
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: Colors.deepOrange,
-                            padding: const EdgeInsets.all(10)),
-                        onPressed: () {
-                          editTask();
-                        },
-                        child: const Text('Save Changes',
-                            style: TextStyle(fontSize: 12))))
-              ],
+          if (success)
+            Positioned(
+              top: 20, // Adjust the top value as needed
+              left: 0,
+              right: 0,
+              child: SuccessMessage(message: alertMessage),
             )
-          ]),
-        ),
+        ],
       ),
     );
   }

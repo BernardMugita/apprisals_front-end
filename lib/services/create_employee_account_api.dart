@@ -35,11 +35,10 @@ class CreateEmployeeAccountApi {
     );
 
     if (request.statusCode == 200) {
-      final response = jsonDecode(request.body);
-      print(response);
+      String response = request.body;
+
       if (response != "Invalid Token") {
-        await Future.delayed(const Duration(seconds: 3));
-        Navigator.pop(context);
+        response = response;
       } else {
         throw Exception('Failed to create employee');
       }

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:employee_insights/screens/Profile/first_time_change.dart';
 import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/widgets/Alert_widgets/error_message.dart';
+import 'package:employee_insights/widgets/Alert_widgets/success_message.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +20,10 @@ class _LoginState extends State<Login> {
   final TextEditingController _organizationController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  bool failedLogin = false;
+  bool successLogin = false;
+  String loginMessage = "";
 
   StorageAccess storage = StorageAccess();
 
@@ -39,20 +45,46 @@ class _LoginState extends State<Login> {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
-      final userData = JwtDecoder.decode(responseData['token']);
-      print(userData);
-      if (userData['has_changed_pass'] == true) {
-        await storage.writeSecureData('token', response.body);
-        Navigator.pushNamed(context, '/');
+      if (responseData == 'Incorrect Password' ||
+          responseData == 'User does not exist') {
+        setState(() {
+          failedLogin = true;
+          loginMessage = responseData;
+        });
+        Future.delayed(const Duration(seconds: 3), () {
+          // Navigator.pushNamed(context, '/login');
+          setState(() => (failedLogin = false));
+        });
       } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FirstTimeChange(userData: responseData),
-          ),
-        );
+        final userData = JwtDecoder.decode(responseData['token'].toString());
+        if (userData['has_changed_pass'] == true) {
+          await storage.writeSecureData('token', response.body);
+          setState(() => (successLogin = true));
+          Future.delayed(const Duration(seconds: 3), () {
+            Navigator.pushNamed(context, '/');
+            setState(() => (successLogin = false));
+          });
+        } else {
+          setState(() => (successLogin = true));
+          Future.delayed(const Duration(seconds: 3), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FirstTimeChange(userData: responseData),
+              ),
+            );
+            setState(() => (successLogin = false));
+          });
+        }
       }
-    } else {}
+    } else {
+      setState(() => (failedLogin = true));
+      loginMessage = response.body;
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pushNamed(context, '/login');
+        setState(() => (failedLogin = false));
+      });
+    }
   }
 
   @override
@@ -80,7 +112,16 @@ class _LoginState extends State<Login> {
                 child: Form(
               child: Column(
                 children: <Widget>[
-                  const SizedBox(height: 200),
+                  // rest of body
+                  const SizedBox(height: 150),
+                  // display login validation messages
+                  if (failedLogin == true)
+                    ErrorMessage(message: loginMessage)
+                  else if (successLogin == true)
+                    const SuccessMessage(message: "Login successful"),
+
+                  // display login form
+                  const Gap(20),
                   const CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.deepOrangeAccent,
