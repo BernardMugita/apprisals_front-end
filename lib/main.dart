@@ -53,10 +53,14 @@ Future<void> main() async {
       '/tasks': (context) => const TasksList(),
       '/singletask': (context) => SingleTaskView(
             taskDetails: taskDetails,
+            onTaskEdited: (Map<String, dynamic> task) {
+              taskDetails = task;
+            },
           ),
       '/createtask': (context) => const CreateNewTask(),
       '/employees': (context) => const EmployeesList(),
-      '/employee_apprisal': (context) => const EmployeeApprisal(),
+      '/employee_apprisal': (context) =>
+          const EmployeeApprisal(employeeEvaluation: {}),
       '/payslips': (context) => const PayslipsList(),
       '/single_slip': (context) => const SinglePayslip(),
       '/messages': (context) => const Messages(),

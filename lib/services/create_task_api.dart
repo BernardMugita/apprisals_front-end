@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:employee_insights/screens/Tasks/single_task_view.dart';
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class CreateTaskAPI {
+  String baseUrl = ApprisalUtils.baseUrl;
+
   Future<Map<String, dynamic>> createTask(
       String token,
       String title,
@@ -23,7 +26,7 @@ class CreateTaskAPI {
         assignedById != "" &&
         taskType != "" &&
         dueDate != "") {
-      final url = Uri.parse("http://10.0.2.2:8000/tasks/create_task");
+      final url = Uri.parse("$baseUrl/tasks/create_task");
 
       final bodyData = {
         'title': title,
@@ -48,21 +51,24 @@ class CreateTaskAPI {
       if (request.statusCode == 200) {
         // Request was successful, parse the response
         final taskDetails = json.decode(request.body);
-        if (taskDetails == "Error" || taskDetails == "Invalid" ||
+        if (taskDetails == "Error" ||
+            taskDetails == "Invalid" ||
             taskDetails == "Unauthorized" ||
             taskDetails == "object has no attribute") {
           return {};
         } else {
           // Add a delay of 3 seconds before navigating to the next screen
-          await Future.delayed(const Duration(seconds: 3));
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SingleTaskView(
-                taskDetails: taskDetails as Map<String, dynamic>,
+          await Future.delayed(const Duration(seconds: 3), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SingleTaskView(
+                  taskDetails: taskDetails as Map<String, dynamic>,
+                  onTaskEdited: (task) => {},
+                ),
               ),
-            ),
-          );
+            );
+          });
           return taskDetails as Map<String, dynamic>;
         }
       } else {

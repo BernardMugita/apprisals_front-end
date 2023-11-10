@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:employee_insights/screens/Tasks/single_task_view.dart';
 import 'package:employee_insights/services/create_task_api.dart';
 import 'package:employee_insights/services/edit_task_api.dart';
 import 'package:employee_insights/services/get_employees_api.dart';
@@ -13,7 +14,9 @@ import 'package:gap/gap.dart';
 
 class EditTask extends StatefulWidget {
   final String taskId;
-  const EditTask({Key? key, required this.taskId}) : super(key: key);
+  final Function(Map<String, dynamic>) onTaskEdited;
+  const EditTask({Key? key, required this.taskId, required this.onTaskEdited})
+      : super(key: key);
 
   @override
   State<EditTask> createState() => _EditTaskState();
@@ -96,14 +99,15 @@ class _EditTaskState extends State<EditTask> {
   }
 
   // edit Task
-  Future<String> editTask() async {
+  Future<Map<String, dynamic>> editTask() async {
     final userToken = await storage.readSecureData('token');
     final Map<String, dynamic> dataMap = jsonDecode(userToken!);
 
     final String token = dataMap['token'];
 
     try {
-      await editTaskAPI.editTask(
+      final response = await editTaskAPI.editTask(
+        taskId,
         token,
         _titleController.text,
         _descriptionController.text,
@@ -117,6 +121,7 @@ class _EditTaskState extends State<EditTask> {
         context,
       );
 
+      print(response);
       // If the request completes without exceptions, you can assume success.
       setState(() {
         success = true;
@@ -126,13 +131,20 @@ class _EditTaskState extends State<EditTask> {
       Future.delayed(const Duration(seconds: 3), () {
         setState(() {
           success = false;
+          widget.onTaskEdited(response);
           alertMessage = "";
         });
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SingleTaskView(
+                  taskDetails: response, onTaskEdited: widget.onTaskEdited),
+            ));
       });
     } catch (e) {
       setState(() {
         error = true;
-        alertMessage = "Failed to update task: $e";
+        alertMessage = "Failed to update task";
       });
 
       Future.delayed(const Duration(seconds: 3), () {
@@ -143,7 +155,7 @@ class _EditTaskState extends State<EditTask> {
       });
     }
 
-    return '';
+    return {};
   }
 
   @override
@@ -435,16 +447,16 @@ class _EditTaskState extends State<EditTask> {
                   ]),
             ),
           ),
-          if (error)
+          if (error == true)
             Positioned(
-              top: 20, // Adjust the top value as needed
+              top: 50, // Adjust the top value as needed
               left: 0,
               right: 0,
               child: ErrorMessage(message: alertMessage),
             ),
-          if (success)
+          if (success == true)
             Positioned(
-              top: 20, // Adjust the top value as needed
+              top: 50, // Adjust the top value as needed
               left: 0,
               right: 0,
               child: SuccessMessage(message: alertMessage),

@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:http/http.dart' as http;
 
 class GetOTPAPI {
+  String baseUrl = ApprisalUtils.baseUrl;
+
   Future<void> getOTP(String token) async {
     final String authorization = token;
 
     // get request for user details
 
-    final url = Uri.parse('http://10.0.2.2:8000/users/getotp');
+    final url = Uri.parse("$baseUrl/users/get_otp");
 
     final request = await http.post(url, headers: <String, String>{
       'Content-Type': 'application/json',
@@ -20,7 +23,7 @@ class GetOTPAPI {
       return responseData;
     } else {
       // Request failed, handle the error
-      print('Request failed with status: ${request.statusCode}');
+      throw Exception('Request failed with status: ${request.statusCode}');
     }
   }
 }

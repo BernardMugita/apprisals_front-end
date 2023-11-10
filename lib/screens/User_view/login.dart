@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:employee_insights/screens/Profile/first_time_change.dart';
 import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:employee_insights/widgets/Alert_widgets/error_message.dart';
 import 'package:employee_insights/widgets/Alert_widgets/success_message.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,11 @@ class _LoginState extends State<Login> {
   String loginMessage = "";
 
   StorageAccess storage = StorageAccess();
+  String baseUrl = ApprisalUtils.baseUrl;
 
   Future<void> authenticateUser(String organization, String username,
       String password, BuildContext context) async {
-    final url = Uri.parse('http://10.0.2.2:8000/users/login');
+    final url = Uri.parse("$baseUrl/users/login");
 
     final response = await http.post(
       url,

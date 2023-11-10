@@ -1,3 +1,4 @@
+import 'package:employee_insights/screens/Employees/employee_apprisal.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeComponent extends StatefulWidget {
@@ -55,7 +56,14 @@ class _EmployeeComponentState extends State<EmployeeComponent> {
             ],
           )),
       onTap: () {
-        Navigator.pushNamed(context, '/employee_apprisal');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EmployeeApprisal(
+              employeeEvaluation: employeeDetails,
+            ),
+          ),
+        );
       },
     );
   }

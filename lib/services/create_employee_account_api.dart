@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class CreateEmployeeAccountApi {
+  String baseUrl = ApprisalUtils.baseUrl;
+
   Future<void> createEmployee(
       String token,
       String username,
@@ -14,7 +17,7 @@ class CreateEmployeeAccountApi {
       String telephone,
       String jobrole,
       BuildContext context) async {
-    final url = Uri.parse('http://10.0.2.2:8000/users/createuser');
+    final url = Uri.parse("$baseUrl/users/createuser");
 
     final request = await http.post(
       url,

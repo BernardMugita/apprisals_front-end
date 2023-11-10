@@ -1,11 +1,14 @@
 import 'dart:convert';
 
-import 'package:employee_insights/screens/Tasks/single_task_view.dart';
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class EditTaskAPI {
-  Future<String> editTask(
+  String baseUrl = ApprisalUtils.baseUrl;
+
+  Future<Map<String, dynamic>> editTask(
+      String taskId,
       String token,
       String title,
       String description,
@@ -17,14 +20,15 @@ class EditTaskAPI {
       String feedback,
       String dueDate,
       BuildContext context) async {
-    final url = Uri.parse('http://10.0.2.2:8000/tasks/edit_task');
+    final url = Uri.parse("$baseUrl/tasks/edit_task");
 
     final request = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token'
         },
-        body: jsonEncode(<String, String>{
+        body: json.encode(<String, String>{
+          'task_id': taskId,
           'title': title,
           'description': description,
           'status': status,
@@ -36,27 +40,16 @@ class EditTaskAPI {
           'due_date': dueDate,
         }));
 
-    if (request.body != "Invalid Token" && request.body != "object has no") {
-      if (request.statusCode == 200) {
-        // Request was successful, parse the response
-        final taskDetails = request.body;
-        // Add a delay of 3 seconds before navigating to the next screen
-        await Future.delayed(const Duration(seconds: 3), () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SingleTaskView(
-                  taskDetails: taskDetails as Map<String, dynamic>),
-            ),
-          );
-        });
-        return taskDetails;
+    if (request.statusCode == 200) {
+      if (request.body == "Invalid Token" || request.body.startsWith("Error")) {
+        // Request was successful, parse t
+        throw Exception('Something went wrong');
       } else {
-        // Request failed, handle the error
-        throw Exception('Failed to edit task');
+        final taskDetails = json.decode(request.body);
+        return taskDetails as Map<String, dynamic>;
       }
     } else {
-      throw Exception('Invalid Token');
+      throw Exception('Failed to edit task');
     }
   }
 }

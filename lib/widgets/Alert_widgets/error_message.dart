@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class ErrorMessage extends StatefulWidget {
   final String message;
@@ -62,14 +63,26 @@ class _ErrorMessageState extends State<ErrorMessage>
             ),
           ),
           child: Center(
-            child: Text(
-              textAlign: TextAlign.center,
-              message,
-              style: const TextStyle(
-                color: Colors.red,
-                fontSize: 20,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const CircleAvatar(
+                backgroundColor: Colors.red,
+                radius: 10,
+                child: Icon(
+                  Icons.error_outline,
+                  color: Colors.white,
+                ),
               ),
-            ),
+              const Gap(10),
+              SizedBox(
+                  child: Text(
+                textAlign: TextAlign.center,
+                message,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 15,
+                ),
+              )),
+            ]),
           ),
         )
       ],

@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class FirstPassChangeAPI {
+  String baseUrl = ApprisalUtils.baseUrl;
+
   StorageAccess storage = StorageAccess();
 
   Future<void> changePassword(String password, String confirmPassword,
@@ -12,7 +15,7 @@ class FirstPassChangeAPI {
       if (password != confirmPassword) {
         print("Passwords do not match");
       } else {
-        final url = Uri.parse("http://10.0.2.2:8000/users/firsttimechange");
+        final url = Uri.parse("$baseUrl/users/first_password_change");
 
         final request = await http.post(url,
             headers: <String, String>{

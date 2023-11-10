@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:http/http.dart' as http;
 
 class GetEmployeesAPI {
+  String baseUrl = ApprisalUtils.baseUrl;
+
   Future<List<Map<String, dynamic>>> getEmployees(String token) async {
-    final url = Uri.parse('http://10.0.2.2:8000/users/getall');
+    final url = Uri.parse("$baseUrl/users/getall");
 
     final request = await http.post(url, headers: <String, String>{
       'Content-Type': 'application/json',
@@ -18,15 +21,15 @@ class GetEmployeesAPI {
             responseData[0] is Map<String, dynamic>) {
           return responseData.cast<Map<String, dynamic>>();
         } else {
-          print('Response items are not in the expected format (Map).');
+          throw Exception(
+              'Response items are not in the expected format (Map).');
         }
       } else {
-        print('Response is not in the expected format (List of Maps).');
+        throw Exception(
+            'Response is not in the expected format (List of Maps).');
       }
     } else {
-      print("Something went wrong");
+      throw Exception("Something went wrong");
     }
-
-    return [];
   }
 }

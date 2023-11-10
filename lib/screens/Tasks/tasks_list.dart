@@ -6,6 +6,7 @@ import 'package:employee_insights/widgets/App_widgets/top_decoration.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/task_component.dart';
 import 'package:employee_insights/widgets/Tasks_widgets/tasks_banner.dart';
 import 'package:flutter/material.dart';
+import 'package:employee_insights/widgets/App_widgets/loading_state.dart';
 
 class TasksList extends StatefulWidget {
   const TasksList({super.key});
@@ -14,24 +15,53 @@ class TasksList extends StatefulWidget {
   State<TasksList> createState() => _TasksListState();
 }
 
-class _TasksListState extends State<TasksList> {
+class _TasksListState extends State<TasksList> with TickerProviderStateMixin {
   StorageAccess storage = StorageAccess();
   GetTasksAPI getTasksAPI = GetTasksAPI();
   List<Map<String, dynamic>> taskData = [];
 
-  Future<List<Map<String, dynamic>>> getTasks() async {
+  bool isLoading = true;
+  bool isDataLoaded = false;
+  String fetchText = 'Fetching tasks...';
+
+  void updateTaskList(Map<String, dynamic> updatedTask) {
+    setState(() {
+      // Find the index of the updated task
+      final index =
+          taskData.indexWhere((task) => task['id'] == updatedTask['id']);
+
+      if (index != -1) {
+        // Replace the old task with the updated task
+        taskData[index] = updatedTask;
+      }
+    });
+  }
+
+  Future<void> getTasks() async {
     final userToken = await storage.readSecureData('token');
     final Map<String, dynamic> dataMap = jsonDecode(userToken!);
 
     final String token = dataMap['token'];
 
-    final tasks = await getTasksAPI.getTasks(token);
+    try {
+      setState(() {
+        isLoading = true;
+      });
 
-    setState(() {
-      taskData = tasks;
-    });
+      final tasks = await getTasksAPI.getTasks(token, updateTaskList);
+      for (var task in tasks) {
+        updateTaskList(task);
+      }
 
-    return tasks;
+      Future.delayed(const Duration(seconds: 3), () {
+        setState(() {
+          isLoading = false;
+          taskData = tasks;
+        });
+      });
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   @override
@@ -131,12 +161,23 @@ class _TasksListState extends State<TasksList> {
                 ),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Column(
                     children: [
-                      for (var tasks in taskData)
-                        TaskComponent(
-                          tasks: tasks,
-                        )
+                      Center(
+                        child: isLoading
+                            ? LoadingState(
+                                fetchText: fetchText,
+                              )
+                            : Column(
+                                children: [
+                                  for (var tasks in taskData)
+                                    TaskComponent(
+                                        tasks: tasks,
+                                        onTaskEdited: updateTaskList),
+                                ],
+                              ),
+                      ),
                     ],
                   ),
                 ),

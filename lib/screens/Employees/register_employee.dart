@@ -257,14 +257,14 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
                 ))
           ]),
         ),
-        if (error)
+        if (error == true)
           Positioned(
             top: 20, // Adjust the top value as needed
             left: 0,
             right: 0,
             child: ErrorMessage(message: alertMessage),
-          ),
-        if (success)
+          )
+        else if (success == true)
           Positioned(
             top: 20, // Adjust the top value as needed
             left: 0,

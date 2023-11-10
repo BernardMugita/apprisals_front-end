@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:http/http.dart' as http;
 
 class TaskActionsAPI {
+  String baseUrl = ApprisalUtils.baseUrl;
+
   // mark task as done
   Future<String> markTaskAsDone(String token, String taskId) async {
-    final url = Uri.parse('http://10.0.2.2:8000/tasks/mark_done');
+    final url = Uri.parse("$baseUrl/tasks/mark_done");
     final request = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -22,7 +25,7 @@ class TaskActionsAPI {
   }
 
   Future<String> markTaskasDisputed(String token, String taskId) async {
-    final url = Uri.parse('http://10.0.2.2:8000/tasks/mark_disputed');
+    final url = Uri.parse("$baseUrl/tasks/mark_disputed");
     final request = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -38,7 +41,7 @@ class TaskActionsAPI {
   }
 
   Future<String> deleteTask(String token, String taskId) async {
-    final url = Uri.parse('http://10.0.2.2:8000/tasks/delete_task');
+    final url = Uri.parse("$baseUrl/tasks/delete_task");
     final request = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json',

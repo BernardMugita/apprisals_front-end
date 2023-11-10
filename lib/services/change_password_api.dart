@@ -1,18 +1,21 @@
 import 'dart:convert';
 import 'package:employee_insights/services/storage.dart';
+import 'package:employee_insights/utils/apprisal_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ChangePasswordAPI {
   StorageAccess storage = StorageAccess();
 
+  String baseUrl = ApprisalUtils.baseUrl;
+
   Future<void> changePassword(String otp, String newPassword,
       String confirmNewPassword, String token, BuildContext context) async {
     if (newPassword != "" && confirmNewPassword != "") {
       if (newPassword != confirmNewPassword) {
-        print("Passwords do not match");
+        throw Exception('Passwords do not match');
       } else {
-        final url = Uri.parse("http://10.0.2.2:8000/users/changepass");
+        final url = Uri.parse("$baseUrl/users/change_password");
 
         final request = await http.post(url,
             headers: <String, String>{

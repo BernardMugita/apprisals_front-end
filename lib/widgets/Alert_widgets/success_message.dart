@@ -62,14 +62,26 @@ class _SuccessMessageState extends State<SuccessMessage>
             ),
           ),
           child: Center(
-            child: Text(
-              textAlign: TextAlign.center,
-              message,
-              style: const TextStyle(
-                color: Colors.green,
-                fontSize: 20,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const CircleAvatar(
+                backgroundColor: Colors.green,
+                radius: 10,
+                child: Icon(
+                  Icons.check_circle,
+                  color: Colors.white,
+                ),
               ),
-            ),
+              SizedBox(
+                  width: 200,
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    message,
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontSize: 15,
+                    ),
+                  ))
+            ]),
           ),
         )
       ],
