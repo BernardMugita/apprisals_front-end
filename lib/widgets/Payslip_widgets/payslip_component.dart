@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PayslipComponent extends StatefulWidget {
-  const PayslipComponent({super.key});
+  final Map<String, dynamic> payslipData;
+
+  const PayslipComponent({Key? key, required this.payslipData})
+      : super(key: key);
 
   @override
   State<PayslipComponent> createState() => _PayslipComponentState();
@@ -10,6 +13,8 @@ class PayslipComponent extends StatefulWidget {
 class _PayslipComponentState extends State<PayslipComponent> {
   @override
   Widget build(BuildContext context) {
+    final payslip = widget.payslipData;
+
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/single_slip');
@@ -36,24 +41,27 @@ class _PayslipComponentState extends State<PayslipComponent> {
               const SizedBox(
                 width: 10,
               ),
-              const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Peter Ngangi",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text("Jan 1 - Jan 31")
-                  ]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(
+                  payslip['employee']['first_name'] +
+                      " " +
+                      payslip['employee']['last_name'],
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(payslip['period'])
+              ]),
               const Spacer(),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
+                  const Text(
                     "KES",
                     style: TextStyle(color: Colors.green),
                   ),
-                  Text("45,000")
+                  Text(
+                    payslip['amount'].toString(),
+                    style: const TextStyle(color: Colors.green),
+                  )
                 ],
               )
             ],

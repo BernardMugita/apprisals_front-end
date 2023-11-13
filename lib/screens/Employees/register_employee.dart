@@ -89,14 +89,14 @@ class RegisterEmployeeState extends State<RegisterEmployee> {
       backgroundColor: const Color(0xFFFEF1ED),
       appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: const Color.fromARGB(255, 146, 146, 0),
           leading: GestureDetector(
               onTap: () {
                 Navigator.pop(context);
               },
               child: const Icon(
                 Icons.arrow_back_ios_new,
-                color: Colors.black,
+                color: Colors.white,
                 size: 16,
               ))),
       body: Stack(children: [

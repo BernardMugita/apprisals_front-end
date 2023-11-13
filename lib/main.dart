@@ -5,6 +5,7 @@ import 'package:employee_insights/screens/Employees/employees.dart';
 import 'package:employee_insights/screens/Employees/register_employee.dart';
 import 'package:employee_insights/screens/Messages/messages.dart';
 import 'package:employee_insights/screens/Messages/single_message_view.dart';
+import 'package:employee_insights/screens/Payslips/create_payslip.dart';
 import 'package:employee_insights/screens/Payslips/payslips_list.dart';
 import 'package:employee_insights/screens/Payslips/single_payslip.dart';
 import 'package:employee_insights/screens/Profile/change_password.dart';
@@ -62,7 +63,10 @@ Future<void> main() async {
       '/employee_apprisal': (context) =>
           const EmployeeApprisal(employeeEvaluation: {}),
       '/payslips': (context) => const PayslipsList(),
-      '/single_slip': (context) => const SinglePayslip(),
+      '/single_slip': (context) => const SinglePayslip(
+            payslipDetails: {},
+      ),
+      '/create_payslips': (context) => const CreatePayslips(),
       '/messages': (context) => const Messages(),
       '/single_message': (context) => const SingleMessageView(),
       '/profile': (context) => const Profile(),

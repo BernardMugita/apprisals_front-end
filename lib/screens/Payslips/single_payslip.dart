@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 
 class SinglePayslip extends StatefulWidget {
-  const SinglePayslip({super.key});
+  final Map<String, dynamic> payslipDetails;
+
+  const SinglePayslip({Key? key, required this.payslipDetails})
+      : super(key: key);
 
   @override
   State<SinglePayslip> createState() => _SinglePayslipState();
 }
 
 class _SinglePayslipState extends State<SinglePayslip> {
+  Map<String, dynamic> payslip = {};
+
   @override
   Widget build(BuildContext context) {
+    final payslipDetails = widget.payslipDetails;
+    if (payslipDetails.isNotEmpty) {
+      payslip = payslipDetails;
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFFEF1ED),
       appBar: AppBar(
@@ -30,7 +40,7 @@ class _SinglePayslipState extends State<SinglePayslip> {
                   GestureDetector(
                     child: const Icon(Icons.arrow_back_rounded),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.popUntil(context, (route) => route.isFirst);
                     },
                   ),
                   const SizedBox(
@@ -62,9 +72,9 @@ class _SinglePayslipState extends State<SinglePayslip> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Text(
-                        "NET PAY",
-                        style: TextStyle(fontSize: 14),
+                      Text(
+                        payslip['net_pay'],
+                        style: const TextStyle(fontSize: 14),
                       ),
                       const SizedBox(
                         child: Text("KES54,500",
@@ -73,9 +83,9 @@ class _SinglePayslipState extends State<SinglePayslip> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.green)),
                       ),
-                      const SizedBox(
-                        child: Text("PAID ON 30/01/2023",
-                            style: TextStyle(fontSize: 14)),
+                      SizedBox(
+                        child: Text("PAID ON ${payslip['date']}",
+                            style: const TextStyle(fontSize: 14)),
                       ),
                       const SizedBox(
                         height: 10,
@@ -108,53 +118,55 @@ class _SinglePayslipState extends State<SinglePayslip> {
                     height: 1,
                     color: Colors.grey[300],
                   ),
-                  const Column(
+                  Column(
                     children: [
-                      Row(children: [
+                      const Row(children: [
                         Text("Employee Details",
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.green)),
                       ]),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Employee Name",
+                          const Text("Employee Name",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
-                              child: Text('Peter Ngangi',
-                                  style: TextStyle(
+                              child: Text(payslip['employee']['name'],
+                                  style: const TextStyle(
                                     fontSize: 16,
                                   )))
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Email Address", style: TextStyle(fontSize: 14)),
+                          const Text("Email Address",
+                              style: TextStyle(fontSize: 14)),
                           SizedBox(
-                              child: Text('peterngangi@gmail.com',
-                                  style: TextStyle(
+                              child: Text(payslip['employee']['email'],
+                                  style: const TextStyle(
                                     fontSize: 14,
                                   )))
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Phone number", style: TextStyle(fontSize: 14)),
+                          const Text("Phone number",
+                              style: TextStyle(fontSize: 14)),
                           SizedBox(
-                              child: Text('+254 722 567778',
-                                  style: TextStyle(
+                              child: Text(payslip['employee']['telephone'],
+                                  style: const TextStyle(
                                     fontSize: 12,
                                   )))
                         ],
@@ -167,30 +179,30 @@ class _SinglePayslipState extends State<SinglePayslip> {
                     height: 1,
                     color: Colors.grey[300],
                   ),
-                  const Column(
+                  Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Normal Pay",
+                          const Text("Normal Pay",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
-                              child: Text('KES 55,000',
-                                  style: TextStyle(
+                              child: Text(payslip['amount'],
+                                  style: const TextStyle(
                                       fontSize: 16, color: Colors.green)))
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Salary", style: TextStyle(fontSize: 14)),
+                          const Text("Salary", style: TextStyle(fontSize: 14)),
                           SizedBox(
-                              child: Text('KES 55,000',
-                                  style: TextStyle(
+                              child: Text(payslip['amount'],
+                                  style: const TextStyle(
                                     fontSize: 14,
                                   )))
                         ],
