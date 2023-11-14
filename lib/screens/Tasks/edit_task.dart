@@ -144,7 +144,8 @@ class _EditTaskState extends State<EditTask> {
     } catch (e) {
       setState(() {
         error = true;
-        alertMessage = "Failed to update task";
+        // alertMessage = "Failed to update task";
+        alertMessage = e.toString();
       });
 
       Future.delayed(const Duration(seconds: 3), () {

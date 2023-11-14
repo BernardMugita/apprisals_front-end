@@ -36,7 +36,7 @@ class _SinglePayslipState extends State<SinglePayslip> {
                   GestureDetector(
                     child: const Icon(Icons.arrow_back_rounded),
                     onTap: () {
-                      Navigator.popUntil(context, (route) => route.isFirst);
+                      Navigator.popAndPushNamed(context, '/');
                     },
                   ),
                   const SizedBox(
@@ -133,7 +133,8 @@ class _SinglePayslipState extends State<SinglePayslip> {
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
                               child: Text(
-                                  "${payslip['employee']['first_name']} ${payslip['employee']['last_name']}",
+                                  payslip.isNotEmpty ?
+                                  "${payslip['employee']['first_name']} ${payslip['employee']['last_name']}": 'loading...',
                                   style: const TextStyle(
                                     fontSize: 16,
                                   )))
@@ -192,8 +193,10 @@ class _SinglePayslipState extends State<SinglePayslip> {
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
-                              child: Text(
-                                payslip['amount'].toString(),
+                              child
+                              : Text(
+                                payslip.isNotEmpty ?
+                                payslip['amount'].toString() : 'loading...',
                                   style: const TextStyle(
                                       fontSize: 16, color: Colors.green)))
                         ],
@@ -206,8 +209,10 @@ class _SinglePayslipState extends State<SinglePayslip> {
                         children: [
                           const Text("Salary", style: TextStyle(fontSize: 14)),
                           SizedBox(
-                              child: Text(
-                                payslip['amount'].toString(),
+                              child
+                              : Text(
+                                payslip.isNotEmpty ?
+                                payslip['amount'].toString() : 'loading...',
                                   style: const TextStyle(
                                     fontSize: 14,
                                   )))
@@ -355,7 +360,8 @@ class _SinglePayslipState extends State<SinglePayslip> {
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
                               child: Text(
-                                payslip['net_pay'].toString(),
+                                payslip.isNotEmpty ?
+                                payslip['net_pay'].toString() : 'loading...',
                                   style: const TextStyle(
                                       fontSize: 16, color: Colors.green)))
                         ],
@@ -370,7 +376,8 @@ class _SinglePayslipState extends State<SinglePayslip> {
                               style: TextStyle(fontSize: 14)),
                           SizedBox(
                               child: Text(
-                                  payslip['net_pay'].toString(),
+                                  payslip.isNotEmpty ?
+                                  payslip['net_pay'].toString() : 'loading...',
                                   style: const TextStyle(
                                     fontSize: 14,
                                   )))

@@ -15,7 +15,7 @@ class FirstPassChangeAPI {
       if (password != confirmPassword) {
         print("Passwords do not match");
       } else {
-        final url = Uri.parse("$baseUrl/users/first_password_change");
+        final url = Uri.parse("$baseUrl/users/firsttimechange");
 
         final request = await http.post(url,
             headers: <String, String>{
