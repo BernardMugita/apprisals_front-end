@@ -11,14 +11,10 @@ class SinglePayslip extends StatefulWidget {
 }
 
 class _SinglePayslipState extends State<SinglePayslip> {
-  Map<String, dynamic> payslip = {};
-
   @override
   Widget build(BuildContext context) {
-    final payslipDetails = widget.payslipDetails;
-    if (payslipDetails.isNotEmpty) {
-      payslip = payslipDetails;
-    }
+    final payslip = widget.payslipDetails;
+    print(payslip);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFEF1ED),
@@ -73,7 +69,7 @@ class _SinglePayslipState extends State<SinglePayslip> {
                         height: 10,
                       ),
                       Text(
-                        payslip['net_pay'],
+                        payslip['net_pay'].toString(),
                         style: const TextStyle(fontSize: 14),
                       ),
                       const SizedBox(
@@ -84,7 +80,8 @@ class _SinglePayslipState extends State<SinglePayslip> {
                                 color: Colors.green)),
                       ),
                       SizedBox(
-                        child: Text("PAID ON ${payslip['date']}",
+                        child: Text(
+                            "PAID ON ${payslip.isNotEmpty ? payslip['date'] : 'loading...'}",
                             style: const TextStyle(fontSize: 14)),
                       ),
                       const SizedBox(
@@ -135,7 +132,8 @@ class _SinglePayslipState extends State<SinglePayslip> {
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
-                              child: Text(payslip['employee']['name'],
+                              child: Text(
+                                  "${payslip['employee']['first_name']} ${payslip['employee']['last_name']}",
                                   style: const TextStyle(
                                     fontSize: 16,
                                   )))
@@ -150,7 +148,10 @@ class _SinglePayslipState extends State<SinglePayslip> {
                           const Text("Email Address",
                               style: TextStyle(fontSize: 14)),
                           SizedBox(
-                              child: Text(payslip['employee']['email'],
+                              child: Text(
+                                  payslip.isNotEmpty
+                                      ? payslip['employee']['email']
+                                      : 'loading...',
                                   style: const TextStyle(
                                     fontSize: 14,
                                   )))
@@ -165,7 +166,10 @@ class _SinglePayslipState extends State<SinglePayslip> {
                           const Text("Phone number",
                               style: TextStyle(fontSize: 14)),
                           SizedBox(
-                              child: Text(payslip['employee']['telephone'],
+                              child: Text(
+                                  payslip.isNotEmpty
+                                      ? payslip['employee']['telephone']
+                                      : 'loading...',
                                   style: const TextStyle(
                                     fontSize: 12,
                                   )))
@@ -188,7 +192,8 @@ class _SinglePayslipState extends State<SinglePayslip> {
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
-                              child: Text(payslip['amount'],
+                              child: Text(
+                                payslip['amount'].toString(),
                                   style: const TextStyle(
                                       fontSize: 16, color: Colors.green)))
                         ],
@@ -201,7 +206,8 @@ class _SinglePayslipState extends State<SinglePayslip> {
                         children: [
                           const Text("Salary", style: TextStyle(fontSize: 14)),
                           SizedBox(
-                              child: Text(payslip['amount'],
+                              child: Text(
+                                payslip['amount'].toString(),
                                   style: const TextStyle(
                                     fontSize: 14,
                                   )))
@@ -339,31 +345,33 @@ class _SinglePayslipState extends State<SinglePayslip> {
                     height: 1,
                     color: Colors.grey[300],
                   ),
-                  const Column(
+                  Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Net Pay",
+                          const Text("Net Pay",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
-                              child: Text('KES 54,500',
-                                  style: TextStyle(
+                              child: Text(
+                                payslip['net_pay'].toString(),
+                                  style: const TextStyle(
                                       fontSize: 16, color: Colors.green)))
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Direct credit amount",
+                          const Text("Direct credit amount",
                               style: TextStyle(fontSize: 14)),
                           SizedBox(
-                              child: Text('KES 54,500',
-                                  style: TextStyle(
+                              child: Text(
+                                  payslip['net_pay'].toString(),
+                                  style: const TextStyle(
                                     fontSize: 14,
                                   )))
                         ],

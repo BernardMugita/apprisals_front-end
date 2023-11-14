@@ -1,3 +1,4 @@
+import 'package:employee_insights/screens/Payslips/single_payslip.dart';
 import 'package:flutter/material.dart';
 
 class PayslipComponent extends StatefulWidget {
@@ -17,7 +18,10 @@ class _PayslipComponentState extends State<PayslipComponent> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/single_slip');
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SinglePayslip(payslipDetails: payslip)));
       },
       child: Container(
           padding: const EdgeInsets.all(15),

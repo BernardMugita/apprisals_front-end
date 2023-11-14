@@ -495,7 +495,9 @@ class _CreatePayslipsState extends State<CreatePayslips> {
                     elevation: 10,
                     backgroundColor: Colors.red,
                     padding: const EdgeInsets.all(10)),
-                onPressed: () {},
+                onPressed: () {
+                  removeAllowanceItem(-1);
+                },
                 child: const Text("Remove"),
               ))
             ]),

@@ -22,7 +22,7 @@ class _PayslipsListState extends State<PayslipsList> {
 
   bool isLoading = true;
   bool isDataLoaded = false;
-  String fetchText = 'Fetching tasks...';
+  String fetchText = 'Fetching payslips...';
 
   Future<void> getPayslips() async {
     final userToken = await storage.readSecureData('token');
